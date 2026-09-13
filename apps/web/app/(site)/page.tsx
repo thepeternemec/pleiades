@@ -1,11 +1,72 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Bell, Coins, FileCheck, Filter, Plug, Zap } from "lucide-react";
 import Marquee from "@/components/ui/marquee/marquee";
 import SiteNav from "@/components/site/site-nav";
 import SiteFooter from "@/components/site/site-footer";
 import { usePleiadesStats } from "@/components/site/use-stats";
-import { PRICES, RAILS, VERBS } from "@/components/site/content";
+import { PRICES, RAILS } from "@/components/site/content";
+
+/** Benefit-led, in the order a buyer cares about them. */
+const FEATURES = [
+  {
+    icon: Zap,
+    title: "Hear it at publish time",
+    desc: "Your agent asks on a schedule, so it learns about a story when it breaks rather than when it trends.",
+    tag: "a question, not a feed",
+  },
+  {
+    icon: Filter,
+    title: "An answer, not a pile",
+    desc: "You get up to eight stories already chosen and ordered. No result page, no ranking to argue with, no scrolling.",
+    tag: "≤8 stories",
+  },
+  {
+    icon: Coins,
+    title: "Cheap to ask often",
+    desc: "Most checks come back empty, and an empty answer costs a twentieth of a cent. Asking every hour is affordable.",
+    tag: "$0.0005 when nothing moved",
+  },
+  {
+    icon: FileCheck,
+    title: "Cited to the publisher",
+    desc: "Every story carries the publisher's own link, name and timestamp. We hand you the signal, never the article.",
+    tag: "source URL on every item",
+  },
+  {
+    icon: Bell,
+    title: "Pays for itself",
+    desc: "Fund a balance with USDC on Solana, or let the agent buy each answer on the spot with x402. No invoices.",
+    tag: "USDC · USDT · SOL",
+  },
+  {
+    icon: Plug,
+    title: "Drops into your stack",
+    desc: "REST, an OpenAI-compatible tool schema, and an MCP server — the same shapes, so you wire it up once.",
+    tag: "REST · tools · MCP",
+  },
+];
+
+const STEPS = [
+  {
+    n: "1",
+    title: "Pick your topics",
+    desc: "Twenty are ready today, across markets, policy, energy and science. Each one is a beat with a stable ID you can store.",
+    tag: "20 topics live",
+  },
+  {
+    n: "2",
+    title: "Your agent asks what changed",
+    desc: "It sends the topic and the cursor from last time. The answer is either nothing moved, or a short pack of what did.",
+    tag: "two possible answers",
+  },
+  {
+    n: "3",
+    title: "It pays for the answer",
+    desc: "Per call over x402 straight from the wallet, or drawn from a balance you funded once in USDC, USDT or SOL.",
+    tag: "no invoice, no seat",
+  },
+];
 
 export default function Home() {
   const { stats, stamp, items, ticker } = usePleiadesStats();
@@ -18,30 +79,29 @@ export default function Home() {
         <section className="hero" id="top">
           <div className="wrap">
             <span className="eyebrow">
-              <span className="eyebrow-tag">Live API</span>
-              {stats?.beats ?? 20} topics
+              <span className="eyebrow-tag">Built on Solana</span>
+              {stats?.beats ?? 20} topics live
               <span style={{ color: "var(--border-strong)" }}>·</span>
               150,000 publishers
               <span style={{ color: "var(--border-strong)" }}>·</span>
-              English sources
+              USDC per call
             </span>
 
-            <h1>The real-time news API for AI agents.</h1>
+            <h1>The news layer for Solana agents.</h1>
             <p className="lede">
-              Pleiades watches 150,000 publishers around the clock and returns a short, cited brief
-              whenever a topic your agent follows changes. Your agent asks on a schedule; Pleiades
-              answers what moved and who reported it. It pays for each answer itself, in USDC on
-              Solana, over x402.
+              Your agent asks one question on a schedule — has this moved? — and pays a fraction of
+              a cent for the answer. USDC over x402, from its own wallet. No account, no API key, no
+              invoice.
             </p>
 
             <div className="hero-cta">
               <a className="btn-primary" href="/dashboard">
                 Open the live terminal <ArrowRight size={14} />
               </a>
-              <a className="btn-ghost" href="#install">Explore the API</a>
+              <a className="btn-ghost" href="/docs">Read the docs</a>
             </div>
             <p className="hero-tiny">
-              x402 on Solana · paid per call from the agent's wallet · USDC · USDT · SOL · English only · free while the meter is wired
+              pay per call · USDC · USDT · SOL · free while we are in early access
             </p>
 
             <div className="mock" style={{ marginTop: 46 }}>
@@ -66,23 +126,23 @@ export default function Home() {
                 </div>
                 <div className="mock-feed">
                   <div className="mock-row">
-                    <span className="k">01 resolve</span>
+                    <span className="k">your agent</span>
                     <span className="v">{`{"task": "due diligence on Nvidia China exposure"}`}</span>
-                    <span className="s">free · next</span>
+                    <span className="s">free</span>
                   </div>
                   <div className="mock-row">
-                    <span className="k">→ beat_id</span>
+                    <span className="k">→ topic</span>
                     <span className="v">b_bb964843350e · NVIDIA</span>
-                    <span className="s">warm</span>
+                    <span className="s">ready</span>
                   </div>
                   <div className="mock-row">
-                    <span className="k">02 poll</span>
-                    <span className="v">moved: false — nothing since cursor c_eyJiIjoi…</span>
+                    <span className="k">ask</span>
+                    <span className="v">has this moved since I last looked?</span>
                     <span className="s">$0.0005</span>
                   </div>
                   <div className="mock-row">
-                    <span className="k">02 poll</span>
-                    <span className="v">moved: true · pack · {items.length || 3} items</span>
+                    <span className="k">answer</span>
+                    <span className="v">moved · 3 new stories · cited</span>
                     <span className="s">$0.004</span>
                   </div>
                   {items.slice(0, 3).map((it, i) => (
@@ -101,10 +161,8 @@ export default function Home() {
                   )}
                 </div>
                 <div className="mock-foot">
-                  <span>poll · /v1/poll</span>
-                  <span>empty · $0.0005</span>
-                  <span>moved · $0.004</span>
-                  <span>≤8 items / ≤800 tokens</span>
+                  <span>paid in USDC</span>
+                  <span>per call</span>
                   <span style={{ marginLeft: "auto" }}>{stamp ? `updated ${stamp}` : "connecting…"}</span>
                 </div>
               </div>
@@ -112,36 +170,36 @@ export default function Home() {
           </div>
         </section>
 
-        {/* METRICS */}
+        {/* NUMBERS */}
         <section className="metrics">
           <div className="wrap">
             <div className="metrics-grid">
               <div>
                 <div className="metric-num">150,000</div>
-                <div className="metric-label">Publishers watched continuously — every story traced to its source</div>
+                <div className="metric-label">Publishers watched around the clock</div>
+              </div>
+              <div>
+                <div className="metric-num">$0.0005</div>
+                <div className="metric-label">What it costs to hear that nothing changed</div>
               </div>
               <div>
                 <div className="metric-num">≤8</div>
-                <div className="metric-label">Stories per answer — small enough to read, cheap enough to ask hourly</div>
+                <div className="metric-label">Stories in an answer, so it fits any context window</div>
               </div>
               <div>
-                <div className="metric-num">≤800</div>
-                <div className="metric-label">Tokens per answer, so a news check fits a small context window</div>
-              </div>
-              <div>
-                <div className="metric-num">30d</div>
-                <div className="metric-label">Depth on the agent API — recent by design, never a full archive</div>
+                <div className="metric-num">Solana</div>
+                <div className="metric-label">Paid per call in USDC, with a receipt every time</div>
               </div>
             </div>
             <p className="hero-tiny" style={{ marginTop: 34 }}>
               {stats?.total_articles
-                ? `live · ${stats.beats} topics · ${stats.total_articles} english articles · ${stats.total_clusters} article clusters · updated ${stamp || "\u2026"}`
+                ? `live · ${stats.beats} topics · ${stats.total_articles} english articles · ${stats.total_clusters} clusters · updated ${stamp || "\u2026"}`
                 : `${stats?.beats ?? 20} topics configured · ingestion paused while the topic catalog is rebuilt`}
             </p>
           </div>
         </section>
 
-        {/* RAILS rail */}
+        {/* RAILS */}
         <section className="rail">
           <Marquee speed={40} gap="2.5rem" pauseOnHover>
             <div className="rail-items">
@@ -152,35 +210,27 @@ export default function Home() {
           </Marquee>
         </section>
 
-        {/* 01 CATEGORY */}
-        <section className="scaffold" id="category">
+        {/* FEATURES */}
+        <section className="scaffold" id="features">
           <div className="wrap">
             <div className="sec-head">
-              <span className="sec-eyebrow">01 · Category</span>
-              <h2 className="sec-title">This is not search.</h2>
+              <span className="sec-eyebrow">What you get</span>
+              <h2 className="sec-title">News your agent can act on.</h2>
               <p className="sec-sub">
-                Search answers a question once and forgets it. A beat keeps state, so the question
-                your agent asks on a schedule is simply whether anything moved.
+                Not another feed to read. A question you can afford to ask constantly, answered in
+                something small enough to use straight away.
               </p>
             </div>
             <div className="features">
-              <div className="feature">
-                <h3 className="feature-title">Who asks</h3>
-                <p className="feature-desc">A human, once. Or a machine, forever, on a schedule you set.</p>
-                <span className="feature-tag">search to scheduled</span>
-              </div>
-              <div className="feature">
-                <h3 className="feature-title">What wins</h3>
-                <p className="feature-desc">Recall and ranking, or state and breadth behind a cursor that never repeats.</p>
-                <span className="feature-tag">ranking to state</span>
-              </div>
-              <div className="feature">
-                <h3 className="feature-title">What it costs</h3>
-                <p className="feature-desc">Search bills per query. Pleiades bills per wake-up, and nothing moved is the cheap answer.</p>
-                <span className="feature-tag">per query to per wake-up</span>
-              </div>
+              {FEATURES.map(({ icon: Icon, title, desc, tag }) => (
+                <div key={title} className="feature">
+                  <span className="feature-icon"><Icon size={15} strokeWidth={1.75} /></span>
+                  <h3 className="feature-title">{title}</h3>
+                  <p className="feature-desc">{desc}</p>
+                  <span className="feature-tag">{tag}</span>
+                </div>
+              ))}
             </div>
-            <p className="more"><a href="/how-it-works">How the rails work</a></p>
           </div>
         </section>
 
@@ -200,12 +250,12 @@ export default function Home() {
               <div>
                 <h3>Fourteen cents buys a day of vigilance.</h3>
                 <p>
-                  Most wakes return nothing, and nothing is cheap. When a beat does move, the same
-                  agent pays four tenths of a cent for a bounded, cited pack and moves on. The cost
+                  Most wakes return nothing, and nothing is cheap. When a topic does move, the same
+                  agent pays four tenths of a cent for a short, cited brief and moves on. The cost
                   tracks the news, not the seat.
                 </p>
                 <ul>
-                  <li>Wake on a schedule — a minute on a market beat, hourly on the rest</li>
+                  <li>Wake on a schedule — a minute on a market topic, hourly on the rest</li>
                   <li>Pay per answer over x402, straight from the agent&rsquo;s wallet</li>
                   <li>Nothing moved is a real answer, and the cheapest one</li>
                   <li>Every call returns a receipt the operator can reconcile</li>
@@ -214,23 +264,23 @@ export default function Home() {
               <div className="mock">
                 <div className="mock-bar">
                   <span className="mock-dots"><span /><span /><span /></span>
-                  <span className="mock-title">agent loop · one beat · one day</span>
+                  <span className="mock-title">agent loop · one topic · one day</span>
                   <span className="mock-live">x402</span>
                 </div>
                 <div className="mock-feed">
                   <div className="mock-row">
                     <span className="k">06:00 wake</span>
-                    <span className="v">poll · b_bb964843350e · NVIDIA</span>
+                    <span className="v">check NVIDIA</span>
                     <span className="s">$0.0005</span>
                   </div>
                   <div className="mock-row">
                     <span className="k">06:00 nothing</span>
-                    <span className="v">moved: false · cursor held</span>
+                    <span className="v">nothing moved · cursor held</span>
                     <span className="s">$0.0005</span>
                   </div>
                   <div className="mock-row">
                     <span className="k">06:30 wake</span>
-                    <span className="v">moved: true · pack · 3 items · 14 sources</span>
+                    <span className="v">three new stories · 14 publishers</span>
                     <span className="s">$0.004</span>
                   </div>
                   <div className="mock-row">
@@ -254,57 +304,39 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 02 CONTRACT TEASER */}
-        <section className="scaffold" id="contract">
+        {/* HOW IT WORKS */}
+        <section className="scaffold" id="how">
           <div className="wrap">
             <div className="sec-head">
-              <span className="sec-eyebrow">02 · The contract</span>
-              <h2 className="sec-title">Three verbs and a cursor.</h2>
+              <span className="sec-eyebrow">How it works</span>
+              <h2 className="sec-title">Three steps, then it runs itself.</h2>
               <p className="sec-sub">
-                Describe a task, ask whether it moved, take the delta. Everything else is a detail
-                you never have to hold in your head.
+                You set it up once. After that the loop is the agent&rsquo;s problem, not yours.
               </p>
             </div>
-            <div className="mock">
-              <div className="mock-bar">
-                <span className="mock-dots"><span /><span /><span /></span>
-                <span className="mock-title">the verbs you actually call</span>
-                <span className="mock-live">live</span>
-              </div>
-              <div className="mock-feed">
-                {VERBS.slice(0, 3).map((v) => (
-                  <div key={v.verb} className="mock-row">
-                    <span className="k" style={{ textTransform: "none", letterSpacing: "0.02em", color: "var(--text-primary)", fontSize: 11 }}>
-                      {v.verb}
-                    </span>
-                    <span className="v">
-                      {v.asks} <span style={{ color: "var(--text-ghost)" }}>→</span> {v.returns}
-                    </span>
-                    <span className="s">
-                      {v.next && <span style={{ color: "var(--text-ghost)" }}>next · </span>}
-                      {v.price}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <div className="mock-foot">
-                <span>GET /v1/catalog · POST /v1/poll · POST /v1/delta ship today</span>
-                <span style={{ marginLeft: "auto" }}>cursor is opaque, signed, beat-bound</span>
-              </div>
+            <div className="features">
+              {STEPS.map((step) => (
+                <div key={step.n} className="feature" style={{ minHeight: 220 }}>
+                  <span className="feature-icon">{step.n}</span>
+                  <h3 className="feature-title">{step.title}</h3>
+                  <p className="feature-desc">{step.desc}</p>
+                  <span className="feature-tag">{step.tag}</span>
+                </div>
+              ))}
             </div>
-            <p className="more"><a href="/how-it-works">The full contract and the pack schema</a></p>
+            <p className="more"><a href="/docs/quickstart">Follow the quickstart</a></p>
           </div>
         </section>
 
-        {/* 03 PRICING TEASER */}
+        {/* PRICING */}
         <section className="scaffold" id="pricing">
           <div className="wrap">
             <div className="sec-head">
-              <span className="sec-eyebrow">03 · Pricing</span>
-              <h2 className="sec-title">Charge the wake-up, not the month.</h2>
+              <span className="sec-eyebrow">Pricing</span>
+              <h2 className="sec-title">Pay for answers, not for seats.</h2>
               <p className="sec-sub">
-                Empty is nearly free so hourly polling is rational. Cold is dear so reuse is
-                rewarded.
+                Nothing moved is nearly free, so asking often is rational. A real answer costs less
+                than half a cent.
               </p>
             </div>
             <div className="features" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
@@ -320,33 +352,33 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 04 PAYMENT TEASER */}
+        {/* SOLANA */}
         <section className="scaffold" id="settlement">
           <div className="wrap">
             <div className="sec-head">
-              <span className="sec-eyebrow">04 · Payment</span>
-              <h2 className="sec-title">Paid on Solana, per call.</h2>
+              <span className="sec-eyebrow">Why Solana</span>
+              <h2 className="sec-title">Money that moves as fast as the news.</h2>
               <p className="sec-sub">
-                x402 lets an agent buy a single call from its own wallet with no account and no
-                invoice. A deposit rail skips the chain per call for desks that poll hourly.
+                A card top-up loses about 9% to processing. The same deposit in USDC on Solana loses
+                about 0.016%, and it clears in under a second.
               </p>
             </div>
             <div className="showcase">
               <div>
-                <h3>Two rails, one balance.</h3>
+                <h3>Two ways to pay, one balance.</h3>
                 <p>
-                  The agent hits a call, gets a 402 quoting it in USDC, signs a Solana transfer and
-                  retries. Or it funds a balance once and draws micros per call with no signature at
-                  all. Either way, every call returns a receipt.
+                  An agent with a wallet pays per call over x402 and never signs up for anything. A
+                  desk that polls all day funds a balance once and then skips the chain entirely.
                 </p>
                 <ul>
-                  <li>x402 — one call, one payment, no signup</li>
-                  <li>Prepaid — USDC, USDT or SOL, credited in USD micros</li>
-                  <li>Solana fees are a fraction of a cent, not 9% of a card top-up</li>
+                  <li>x402 — one call, one payment, no account required</li>
+                  <li>Prepaid — deposit USDC, USDT or SOL and draw down per call</li>
+                  <li>Every call returns a receipt you can reconcile in USD</li>
+                  <li>Empty answers stay cheap, so polling often is the point</li>
                 </ul>
               </div>
               <div className="code">
-                <div className="code-bar">HTTP 402 Payment Required · Solana</div>
+                <div className="code-bar">402 Payment Required · Solana</div>
                 <pre>{`{
   "x402Version": 2,
   "accepts": [{
@@ -359,7 +391,7 @@ export default function Home() {
 }`}</pre>
               </div>
             </div>
-            <p className="more"><a href="/solana">Deposits, receipts and the token</a></p>
+            <p className="more"><a href="/solana">How payment works on Solana</a></p>
           </div>
         </section>
 
@@ -368,15 +400,15 @@ export default function Home() {
           <div className="wrap">
             <h2 className="cta-title">Never miss the signal.</h2>
             <p className="cta-sub">
-              Tell Pleiades which topics matter, then let your agent ask what changed. One API,
-              every story cited back to the publisher that broke it.
+              Point your agent at the topics that matter, give it a wallet, and let it tell you when
+              something changes.
             </p>
             <div className="cta-row">
               <a className="btn-primary" href="/dashboard">Open the live terminal <ArrowRight size={14} /></a>
-              <a className="btn-ghost" href="#install">Explore the API</a>
+              <a className="btn-ghost" href="/docs">Read the docs</a>
             </div>
             <p className="cta-tiny">
-              English only · free while we are in early access · one API call at a time
+              built on Solana · USDC · USDT · SOL · free while we are in early access
             </p>
           </div>
         </section>

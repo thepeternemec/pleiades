@@ -10,11 +10,11 @@ export default function SiteFooter() {
           </div>
           <div className="footer-links">
             <a href="/dashboard">Terminal</a>
-            <a href="/how-it-works">How it works</a>
+            <a href="/solana">Why Solana</a>
             <a href="/pricing">Pricing</a>
-            <a href="/solana">Solana</a>
-            <a href="/api">API</a>
+            <a href="/docs">Docs</a>
             <a href="/faq">FAQ</a>
+            <a href="https://github.com/thepeternemec/pleiades">GitHub</a>
           </div>
         </div>
         <div className="footer-row" style={{ marginTop: 10 }}>

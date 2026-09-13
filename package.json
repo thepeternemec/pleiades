@@ -2,7 +2,7 @@
   "name": "pleiades",
   "version": "0.2.0",
   "private": true,
-  "description": "Pleiades \u2014 the real-time news terminal. Agentic news discovery, curation, and delivery infrastructure.",
+  "description": "Pleiades \u2014 the news layer for Solana agents. Real-time beats, bounded cited packs, and metered payment over x402 or a prepaid USDC balance.",
   "license": "MIT",
   "engines": {
     "node": ">=20"
@@ -26,5 +26,21 @@
   },
   "allowScripts": {
     "esbuild@0.28.2": true
+  },
+  "keywords": [
+    "news",
+    "api",
+    "ai-agents",
+    "solana",
+    "x402",
+    "usdc",
+    "mcp",
+    "real-time",
+    "newsapi"
+  ],
+  "homepage": "https://pleiades.news",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thepeternemec/pleiades.git"
   }
 }
