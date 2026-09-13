@@ -1,11 +1,13 @@
-import { Hono } from "hono";
+import { Hono, type Context } from "hono";
 import { mcpResponse } from "./lib/mcp.js";
 import { newsRoutes } from "./lib/news-routes.js";
-import { BeatSchema, PollRequestSchema, PRICE_CARD, SEED_BEATS, TOOL_DEFINITIONS, WebhookRegisteredSchema, WebhookRegistrationRequestSchema, } from "@pleiades/contracts";
-import { createSupabaseClient, getDashboardStats, hasSupabaseEnv, insertWebhook, listWebhooks, revokeWebhook, } from "@pleiades/db";
+import { BeatSchema, DepositRequestSchema, PollRequestSchema, PRICE_CARD, SEED_BEATS, SOLANA_MINTS, TOKEN_DECIMALS, TOOL_DEFINITIONS, WebhookRegisteredSchema, WebhookRegistrationRequestSchema, } from "@pleiades/contracts";
+import { chargeCall, createDepositIntent, createSupabaseClient, DEFAULT_DAILY_BEAT_CAP, DEFAULT_DAILY_CAP_MICROS, env, getBalance, getDashboardStats, getDepositIntent, hasSupabaseEnv, insertWebhook, isLowBalance, listDepositIntents, listReceipts, listWebhooks, MIN_DEPOSIT_MICROS, revokeWebhook, toPublicIntent, } from "@pleiades/db";
+import { authenticate, presentedSecret } from "./lib/auth.js";
 import { errorByCode } from "./lib/errors.js";
 import { openapi } from "./lib/openapi.js";
 import { getPollSnapshot } from "./lib/store.js";
+import { x402Challenge } from "./lib/x402.js";
 export const SERVICE = {
     name: "pleiades",
     version: "0.2.0",
@@ -99,56 +101,240 @@ app.get("/v1/pricing", (c) => c.json({
 app.post("/v1/resolve", (c) => errorByCode(c, "resolution_unavailable", {
     message: "Live task resolution requires the graph adapter (Phase 1). Use /v1/catalog.",
 }));
-// ── Metered routes: served from persisted packs once ingestion lands ─
-// When Supabase is not configured (local dev without a stack), the routes
-// return `pack_not_ready` — the correct contract state for no packs.
-app.post("/v1/poll", async (c) => {
-    const body = await c.req.json().catch(() => null);
-    const parsed = PollRequestSchema.safeParse(body);
+// ── Metered routes ──────────────────────────────────────────────────
+// Dual rail. A prepaid credential pays from the balance; a request with no
+// credential gets a 402 quoting this exact call so a wallet can pay for it.
+// Pricing follows the answer, not the request: "nothing moved" is the cheap path.
+function treasury(): string | null {
+    const value = env("PLEIADES_TREASURY")?.trim();
+    return value ? value : null;
+}
+/**
+ * Metering is off until it is deliberately switched on. The charging path is
+ * built and tested, but turning it on makes every anonymous caller a 402 and
+ * every caller without a key unable to read a pack — so it ships behind a flag
+ * rather than as a side effect of a deploy.
+ */
+function meteringEnabled(): boolean {
+    return (env("PLEIADES_METERING") ?? "off").trim().toLowerCase() === "on";
+}
+async function meteredCall(c: Context, call: "poll" | "delta") {
+    const input = await c.req.json().catch(() => null);
+    const parsed = PollRequestSchema.safeParse(input);
     if (!parsed.success) {
         return errorByCode(c, "invalid_request", { detail: parsed.error.issues });
     }
-    const known = SEED_BEATS.some((b) => b.beat_id === parsed.data.beat_id);
-    if (!known) {
+    const beatId = parsed.data.beat_id;
+    if (!SEED_BEATS.some((b) => b.beat_id === beatId)) {
         return errorByCode(c, "beat_unavailable");
     }
+    if (!hasSupabaseEnv())
+        return errorByCode(c, "database_not_configured");
+    const db = createSupabaseClient();
+    if (!db)
+        return errorByCode(c, "database_not_configured");
+    // Validate the credential before looking at any data, so a bad key is a 401
+    // whether or not a pack happens to exist for this beat.
+    const { agent, rejected } = await authenticate(db, c);
+    if (rejected)
+        return errorByCode(c, "invalid_credential");
+    let snapshot;
     try {
-        const snapshot = await getPollSnapshot(parsed.data.beat_id, parsed.data.cursor);
-        if (snapshot)
-            return c.json(snapshot);
+        snapshot = await getPollSnapshot(beatId, parsed.data.cursor);
     }
     catch (error) {
-        console.error("poll snapshot failed:", error);
+        console.error(`${call} snapshot failed:`, error);
         return errorByCode(c, "internal_error");
     }
-    return errorByCode(c, "pack_not_ready", {
-        message: "No packs yet for this beat. Ingestion produces them on its schedule.",
+    if (!snapshot) {
+        return errorByCode(c, "pack_not_ready", {
+            message: "No packs yet for this beat. Ingestion produces them on its schedule.",
+        });
+    }
+    // Metering off: the public rail behaves as it did before the meter existed.
+    if (!meteringEnabled())
+        return c.json(snapshot);
+    const priceMicros = Number(snapshot.moved ? PRICE_CARD.calls.poll_moved : PRICE_CARD.calls.poll_empty);
+    const resource = `${call.toUpperCase()} /v1/${call}`;
+    if (!agent) {
+        return c.json(x402Challenge({
+            resource,
+            amountMicros: priceMicros,
+            payTo: treasury(),
+            description: `Pleiades ${call} for ${beatId}.`,
+        }), 402);
+    }
+    let charge;
+    try {
+        charge = await chargeCall(db, { agentId: agent.agentId, micros: priceMicros, call, beatId });
+    }
+    catch (error) {
+        console.error(`${call} charge failed:`, error);
+        return errorByCode(c, "internal_error");
+    }
+    if (!charge.ok) {
+        if (charge.reason === "insufficient_balance") {
+            return c.json(x402Challenge({
+                resource,
+                amountMicros: priceMicros,
+                payTo: treasury(),
+                description: "Balance exhausted. Top up, or pay for this call over x402.",
+            }), 402);
+        }
+        if (charge.reason === "daily_cap") {
+            return errorByCode(c, "daily_cap", {
+                daily_cap_micros: DEFAULT_DAILY_CAP_MICROS,
+                spent_micros: charge.dailyMicros,
+            });
+        }
+        if (charge.reason === "beat_cap") {
+            return errorByCode(c, "beat_cap", {
+                daily_beat_cap: DEFAULT_DAILY_BEAT_CAP,
+                beats_today: charge.dailyBeats,
+            });
+        }
+        return errorByCode(c, "invalid_credential");
+    }
+    // The ledger's receipt replaces the placeholder carried on the pack row.
+    return c.json({ ...snapshot, receipt_id: charge.receiptId });
+}
+app.post("/v1/poll", (c) => meteredCall(c, "poll"));
+app.post("/v1/delta", (c) => meteredCall(c, "delta"));
+// ── Account: balance, receipts, deposits ────────────────────────────
+async function requireAgent(c: Context) {
+    if (!hasSupabaseEnv())
+        return { error: errorByCode(c, "database_not_configured") } as const;
+    const db = createSupabaseClient();
+    if (!db)
+        return { error: errorByCode(c, "database_not_configured") } as const;
+    const { agent, rejected } = await authenticate(db, c);
+    if (rejected || !agent)
+        return { error: errorByCode(c, "invalid_credential") } as const;
+    return { db, agent } as const;
+}
+app.get("/v1/balance", async (c) => {
+    const ctx = await requireAgent(c);
+    if ("error" in ctx)
+        return ctx.error;
+    try {
+        const snapshot = await getBalance(ctx.db, ctx.agent.agentId);
+        if (!snapshot)
+            return errorByCode(c, "internal_error");
+        return c.json({
+            agent_id: snapshot.agentId,
+            balance_micros: snapshot.balanceMicros,
+            currency: "USD",
+            unit: "micros",
+            today: { calls: snapshot.callsToday, micros: snapshot.microsToday, beats: snapshot.beatsToday },
+            caps: { daily_cap_micros: DEFAULT_DAILY_CAP_MICROS, daily_beat_cap: DEFAULT_DAILY_BEAT_CAP },
+            low_balance: isLowBalance(snapshot.balanceMicros),
+        });
+    }
+    catch (error) {
+        console.error("balance failed:", error);
+        return errorByCode(c, "internal_error");
+    }
+});
+app.get("/v1/receipts", async (c) => {
+    const ctx = await requireAgent(c);
+    if ("error" in ctx)
+        return ctx.error;
+    const since = c.req.query("since");
+    if (since && Number.isNaN(Date.parse(since))) {
+        return errorByCode(c, "invalid_since", { detail: "since must be an ISO 8601 timestamp" });
+    }
+    try {
+        return c.json({ receipts: await listReceipts(ctx.db, ctx.agent.agentId, since) });
+    }
+    catch (error) {
+        console.error("receipts failed:", error);
+        return errorByCode(c, "internal_error");
+    }
+});
+app.get("/v1/tokens", (c) => {
+    const network = c.req.query("network") ?? "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp";
+    const table = SOLANA_MINTS[network as keyof typeof SOLANA_MINTS];
+    if (!table)
+        return errorByCode(c, "unsupported_rail", { detail: `unknown network ${network}` });
+    return c.json({
+        network,
+        settlement: treasury() ? "facilitator" : "unavailable",
+        tokens: Object.entries(table).map(([symbol, mint]) => ({
+            symbol,
+            mint,
+            decimals: TOKEN_DECIMALS[symbol as keyof typeof TOKEN_DECIMALS],
+            native: mint === "",
+        })),
+        min_deposit_micros: MIN_DEPOSIT_MICROS,
     });
 });
-app.post("/v1/delta", async (c) => {
-    const body = await c.req.json().catch(() => null);
-    const parsed = PollRequestSchema.safeParse(body);
+app.get("/v1/deposits", async (c) => {
+    const ctx = await requireAgent(c);
+    if ("error" in ctx)
+        return ctx.error;
+    try {
+        const rows = await listDepositIntents(ctx.db, ctx.agent.agentId);
+        return c.json({ deposits: rows.map((row) => toPublicIntent(row, treasury() ?? "")) });
+    }
+    catch (error) {
+        console.error("deposit list failed:", error);
+        return errorByCode(c, "internal_error");
+    }
+});
+app.get("/v1/deposits/:id", async (c) => {
+    const ctx = await requireAgent(c);
+    if ("error" in ctx)
+        return ctx.error;
+    try {
+        const row = await getDepositIntent(ctx.db, c.req.param("id"));
+        if (!row || row.agent_id !== ctx.agent.agentId)
+            return errorByCode(c, "invalid_request", { detail: "not_found" });
+        return c.json(toPublicIntent(row, treasury() ?? ""));
+    }
+    catch (error) {
+        console.error("deposit read failed:", error);
+        return errorByCode(c, "internal_error");
+    }
+});
+app.post("/v1/deposits", async (c) => {
+    const ctx = await requireAgent(c);
+    if ("error" in ctx)
+        return ctx.error;
+    const body = await c.req.json().catch(() => ({}));
+    const parsed = DepositRequestSchema.safeParse(body ?? {});
     if (!parsed.success) {
         return errorByCode(c, "invalid_request", { detail: parsed.error.issues });
     }
-    const known = SEED_BEATS.some((b) => b.beat_id === parsed.data.beat_id);
-    if (!known) {
-        return errorByCode(c, "beat_unavailable");
+    const symbol = parsed.data.symbol ?? "USDC";
+    const fromUi = parsed.data.amount_ui ? Math.round(Number(parsed.data.amount_ui) * 1e6) : null;
+    const amountMicros = parsed.data.amount_micros ?? fromUi ?? MIN_DEPOSIT_MICROS;
+    if (!Number.isFinite(amountMicros) || amountMicros < MIN_DEPOSIT_MICROS) {
+        return errorByCode(c, "invalid_request", {
+            detail: `minimum deposit is ${MIN_DEPOSIT_MICROS} micros ($${MIN_DEPOSIT_MICROS / 1e6})`,
+        });
+    }
+    const payTo = treasury();
+    if (!payTo) {
+        return errorByCode(c, "unsupported_rail", {
+            message: "The Solana rail is not configured: no treasury address is set.",
+        });
     }
     try {
-        // Phase 1 delta: single-pack snapshot (multi-page delta lands with
-        // per-pack pagination in a later iteration).
-        const snapshot = await getPollSnapshot(parsed.data.beat_id, parsed.data.cursor);
-        if (snapshot)
-            return c.json(snapshot);
+        const intent = await createDepositIntent(ctx.db, {
+            agentId: ctx.agent.agentId,
+            symbol,
+            amountMicros,
+            treasury: payTo,
+        });
+        return c.json({ ...intent, recipient: payTo, pay_url: toPublicIntent({
+            ...intent,
+            created_at: new Date().toISOString(),
+        }, payTo).pay_url }, 201);
     }
     catch (error) {
-        console.error("delta snapshot failed:", error);
+        console.error("deposit create failed:", error);
         return errorByCode(c, "internal_error");
     }
-    return errorByCode(c, "pack_not_ready", {
-        message: "No packs yet for this beat. Ingestion produces them on its schedule.",
-    });
 });
 // ── Webhooks (Phase 2) ──────────────────────────────────────────────
 // Single-operator mode until workspaces land (Phase 6): no per-agent

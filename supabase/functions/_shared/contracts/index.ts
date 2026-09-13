@@ -10,3 +10,4 @@ export * from "./tools.ts";
 export * from "./webhooks.ts";
 export * from "./seed.ts";
 export * from "./news.ts";
+export * from "./payments.ts";

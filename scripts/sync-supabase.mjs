@@ -38,6 +38,11 @@ const COPIES = [
         rewrite: [['from "zod"', 'from "npm:zod@^3.24.1"']],
     },
     {
+        src: "packages/contracts/src/payments.ts",
+        dst: "contracts/payments.ts",
+        rewrite: [['from "zod"', 'from "npm:zod@^3.24.1"']],
+    },
+    {
         src: "packages/contracts/src/packs.ts",
         dst: "contracts/packs.ts",
         rewrite: [['from "zod"', 'from "npm:zod@^3.24.1"'], [/from "(\.[^"]+)\.js"/g, 'from "$1.ts"']],
@@ -91,6 +96,8 @@ const COPIES = [
             ['from "./lib/store.js"', 'from "./store.ts"'],
             ['from "./lib/news-routes.js"', 'from "./news-routes.ts"'],
             ['from "./lib/mcp.js"', 'from "./mcp.ts"'],
+            ['from "./lib/auth.js"', 'from "./auth.ts"'],
+            ['from "./lib/x402.js"', 'from "./x402.ts"'],
         ],
     },
     {
@@ -105,6 +112,20 @@ const COPIES = [
         src: "apps/api/src/lib/openapi.ts",
         dst: "api/openapi.ts",
         rewrite: [],
+    },
+    {
+        src: "apps/api/src/lib/auth.ts",
+        dst: "api/auth.ts",
+        rewrite: [
+            ['from "hono"', 'from "npm:hono@^4.6.14"'],
+            ['from "@supabase/supabase-js"', 'from "npm:@supabase/supabase-js@^2.45.4"'],
+            ['from "@pleiades/db"', 'from "../db/index.ts"'],
+        ],
+    },
+    {
+        src: "apps/api/src/lib/x402.ts",
+        dst: "api/x402.ts",
+        rewrite: [['from "@pleiades/contracts"', 'from "../contracts/index.ts"']],
     },
     {
         src: "apps/api/src/lib/store.ts",
@@ -128,6 +149,31 @@ const COPIES = [
         rewrite: [
             ['from "@supabase/supabase-js"', 'from "npm:@supabase/supabase-js@^2.45.4"'],
             ['from "@pleiades/contracts"', 'from "../contracts/index.ts"'],
+        ],
+    },
+    {
+        src: "packages/db/src/agents.ts",
+        dst: "db/agents.ts",
+        rewrite: [
+            ['from "@supabase/supabase-js"', 'from "npm:@supabase/supabase-js@^2.45.4"'],
+            [/from "(\.[^"]+)\.js"/g, 'from "$1.ts"'],
+        ],
+    },
+    {
+        src: "packages/db/src/ledger.ts",
+        dst: "db/ledger.ts",
+        rewrite: [
+            ['from "@supabase/supabase-js"', 'from "npm:@supabase/supabase-js@^2.45.4"'],
+            [/from "(\.[^"]+)\.js"/g, 'from "$1.ts"'],
+        ],
+    },
+    {
+        src: "packages/db/src/deposits.ts",
+        dst: "db/deposits.ts",
+        rewrite: [
+            ['from "@supabase/supabase-js"', 'from "npm:@supabase/supabase-js@^2.45.4"'],
+            ['from "@pleiades/contracts"', 'from "../contracts/index.ts"'],
+            [/from "(\.[^"]+)\.js"/g, 'from "$1.ts"'],
         ],
     },
     {

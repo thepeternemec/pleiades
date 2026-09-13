@@ -28,7 +28,21 @@ export interface LatestPackRow {
 export async function findBeat(db: SupabaseClient, beatId: string): Promise<Beat | null> {
   const { data } = await db.from("beats").select("*").eq("beat_id", beatId).maybeSingle();
   if (!data) return null;
-  const parsed = BeatSchema.safeParse(data);
+
+  // The optional columns are nullable in Postgres but `.optional()` in the
+  // contract, and zod rejects null for an optional field. Normalising here
+  // matters more than it looks: without it every beat fails to parse and the
+  // metered routes report `pack_not_ready` forever, because a missing beat is
+  // indistinguishable from a missing pack at the call site.
+  const row = data as Record<string, unknown>;
+  const parsed = BeatSchema.safeParse({
+    ...row,
+    topic_page_uri: row.topic_page_uri ?? undefined,
+    keywords: row.keywords ?? undefined,
+  });
+  if (!parsed.success) {
+    console.error("beat failed schema validation", beatId, parsed.error.issues);
+  }
   return parsed.success ? parsed.data : null;
 }
 

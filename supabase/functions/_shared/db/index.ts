@@ -4,3 +4,6 @@
 
 export * from "./client.ts";
 export * from "./queries.ts";
+export * from "./agents.ts";
+export * from "./ledger.ts";
+export * from "./deposits.ts";

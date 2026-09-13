@@ -6,3 +6,4 @@ export * from "./tools.js";
 export * from "./webhooks.js";
 export * from "./seed.js";
 export * from "./news.js";
+export * from "./payments.js";

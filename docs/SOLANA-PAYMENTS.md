@@ -1,8 +1,51 @@
 # Solana payments — deposit, metering and token plan
 
-Status: **proposed** (site copy ships ahead of it, marked `next`)
+Status: **partly built**. The metering core (identity, balance, receipts, caps) and
+deposit intents are implemented and verified against the live database. The on-chain
+half — the deposit watcher and x402 settlement — needs a treasury address and an RPC
+provider before it can run, and is gated behind `PLEIADES_METERING`.
+
 Scope: how a customer funds a Pleiades account with stablecoins on Solana, how calls
 are metered against that balance, and how a Pleiades SPL token would be accepted.
+
+---
+
+## 0. What is built, and what is not
+
+| | Status |
+|---|---|
+| `agents`, `api_keys` — identity, hashed credentials | **built** (`0008_metering.sql`) |
+| `ledgers`, `receipts` — balance and an append-only receipt per call | **built**, previously unused |
+| `charge_call()` — caps, debit, receipt and counters in one transaction | **built** |
+| `credit_balance()`, `record_deposit()` — credit, once per signature | **built** |
+| `GET /v1/balance`, `GET /v1/receipts?since=` | **built** |
+| `GET /v1/tokens` — accepted mints, decimals, settlement state | **built** |
+| `POST/GET /v1/deposits` — intent, Solana Pay URL, reference key | **built**; returns `unsupported_rail` until a treasury is set |
+| x402 challenge on an uncredentialed call | **built** (`402` with the quote for that resource) |
+| Deposit watcher (Helius webhook + polling sweep) | **not yet** — needs RPC + treasury |
+| x402 settlement (facilitator verify + settle) | **not yet** |
+| `resolve`, `brief`, `watch` verbs | **not yet** |
+
+### Turning the meter on
+
+```
+PLEIADES_METERING=on        # default "off"
+PLEIADES_TREASURY=<base58>  # a native SOL account, never an ATA
+```
+
+Metering is off by default on purpose. Switching it on makes every anonymous call a
+`402` and every caller without a key unable to read a pack, so it should be a
+deliberate act, not a side effect of a deploy.
+
+### Creating the first key
+
+There is no signup endpoint yet. Operator-granted access, as the site says:
+
+```js
+import { createSupabaseClient, createAgent } from "@pleiades/db";
+const { agentId, secret } = await createAgent(createSupabaseClient()!, "first agent");
+console.log(secret); // shown once — only its SHA-256 is stored
+```
 
 ---
 
