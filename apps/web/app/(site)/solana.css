@@ -1,0 +1,209 @@
+/* ══════════════════════════════════════════════════════════════════
+   PLEIADES — Solana brand layer
+   Palette from solana.com/branding: Solana Purple #9945FF, Solana Green
+   #14F195, plus the extended kit (Surge / Ocean / Purple Dino).
+   Applied as accents on a black base, which is how Solana's own brand
+   guidance says the gradient should sit.
+   ══════════════════════════════════════════════════════════════════ */
+
+:root {
+  --sol-purple: #9945ff;
+  --sol-green: #14f195;
+  --sol-surge: #00ffa3;
+  --sol-ocean: #03e1ff;
+  --sol-dino: #dc1fff;
+
+  --sol-gradient: linear-gradient(115deg, #9945ff 0%, #14f195 100%);
+  --sol-gradient-rev: linear-gradient(115deg, #14f195 0%, #9945ff 100%);
+  --sol-glow-purple: rgba(153, 69, 255, 0.5);
+  --sol-glow-green: rgba(20, 241, 149, 0.42);
+  --sol-glow-ocean: rgba(3, 225, 255, 0.3);
+  --sol-ink: #04120c;
+}
+
+/* ── Animated Solana gradient field ───────────────────────────────── */
+.sol-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: calc(0.55 * var(--aurora-fade, 1));
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.7) 38%, transparent 78%);
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.7) 38%, transparent 78%);
+}
+.sol-blob {
+  position: absolute;
+  width: 46vw;
+  height: 46vw;
+  border-radius: 50%;
+  filter: blur(80px);
+  will-change: transform;
+}
+.sol-blob-a {
+  top: -16vw;
+  left: -8vw;
+  background: radial-gradient(circle, var(--sol-glow-purple), transparent 66%);
+  animation: sol-drift-a 26s ease-in-out infinite alternate;
+}
+.sol-blob-b {
+  top: -6vw;
+  right: -12vw;
+  background: radial-gradient(circle, var(--sol-glow-green), transparent 66%);
+  animation: sol-drift-b 34s ease-in-out infinite alternate;
+}
+.sol-blob-c {
+  top: 22vw;
+  left: 30vw;
+  background: radial-gradient(circle, var(--sol-glow-ocean), transparent 68%);
+  animation: sol-drift-c 44s ease-in-out infinite alternate;
+}
+@keyframes sol-drift-a {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(9vw, 6vw, 0) scale(1.16);
+  }
+}
+@keyframes sol-drift-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.08);
+  }
+  to {
+    transform: translate3d(-8vw, 9vw, 0) scale(1);
+  }
+}
+@keyframes sol-drift-c {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(-12vw, -7vw, 0) scale(1.22);
+  }
+}
+
+/* ── Gradient text utility ────────────────────────────────────────── */
+.grad {
+  background: var(--sol-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ── Accents ──────────────────────────────────────────────────────── */
+
+/* Primary buttons carry the brand gradient. */
+.btn-primary,
+.nav-cta {
+  background: var(--sol-gradient);
+  color: var(--sol-ink);
+  font-weight: 600;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
+}
+.btn-primary:hover,
+.nav-cta:hover {
+  background: var(--sol-gradient-rev);
+  color: var(--sol-ink);
+}
+
+/* The eyebrow pill reads as "Solana" at a glance. */
+.eyebrow-tag {
+  background: rgba(153, 69, 255, 0.2);
+  border: 1px solid rgba(153, 69, 255, 0.45);
+  color: #e6d4ff;
+}
+
+/* Headline figures use the gradient — the most Solana element on the page. */
+.metric-num {
+  background: var(--sol-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Hairline marks and icons pick up the accent without shouting. */
+.rail-item i {
+  background: var(--sol-green);
+}
+.feature-icon {
+  border-color: rgba(153, 69, 255, 0.42);
+  color: var(--sol-green);
+  background: linear-gradient(140deg, rgba(153, 69, 255, 0.16), rgba(20, 241, 149, 0.1));
+}
+.footer-co,
+.footer-brand-line .footer-co {
+  background: var(--sol-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Links and nav warm up on hover. */
+.nav-link:hover,
+.footer-links a:hover,
+.showcase a:hover {
+  color: var(--sol-green);
+}
+::selection {
+  background: rgba(153, 69, 255, 0.4);
+  color: #fff;
+}
+:focus-visible {
+  outline: 2px solid var(--sol-purple);
+  outline-offset: 2px;
+}
+
+/* The code scanner band takes the gradient instead of plain white. */
+.code::after {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(153, 69, 255, 0.12) 42%,
+    rgba(20, 241, 149, 0.22) 50%,
+    rgba(153, 69, 255, 0.12) 58%,
+    transparent 100%
+  );
+}
+
+/* Aurora now renders in Solana colours — the grayscale flattening is off. */
+.aurora-layer {
+  filter: brightness(1.1) saturate(1.15);
+}
+
+/* ── Motion-safe fallbacks ────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .sol-blob {
+    animation: none;
+  }
+  .sol-glow {
+    opacity: 0.4;
+  }
+}
+
+/* ── Subpage header + "read more" link ────────────────────────────── */
+.page-head {
+  padding: 148px 0 24px;
+}
+.page-head .sec-title {
+  max-width: 26ch;
+  font-size: clamp(34px, 5vw, 58px);
+}
+.page-head .sec-sub {
+  max-width: 60ch;
+}
+.more {
+  margin: 26px 0 0;
+  font: 11px var(--font-mono), monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.more a {
+  color: var(--sol-green);
+  border-bottom: 1px solid rgba(20, 241, 149, 0.35);
+  padding-bottom: 2px;
+}
+.more a:hover {
+  color: #fff;
+  border-bottom-color: #fff;
+}
