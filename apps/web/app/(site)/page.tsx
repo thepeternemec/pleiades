@@ -43,9 +43,10 @@ interface Catalog {
 }
 
 const RAILS = [
+  "Solana Pay",
+  "USDC · USDT · SOL",
+  "x402 · SVM",
   "MCP",
-  "Coinbase x402",
-  "Virtuals ACP",
   "REST API",
   "WebSocket",
   "Telegram",
@@ -90,6 +91,27 @@ const VERBS = [
   },
 ];
 
+const DEPOSIT_STEPS = [
+  {
+    n: "1",
+    title: "Create a deposit",
+    desc: "POST /v1/deposits returns a Solana Pay URL, a mint, an amount and a fresh reference key. The intent expires in 30 minutes.",
+    tag: "solana:<treasury>?amount=…&spl-token=…&reference=…",
+  },
+  {
+    n: "2",
+    title: "Pay from any wallet",
+    desc: "Phantom, Solflare, Backpack or anything that speaks Solana Pay. The reference rides along as a read-only account on the transfer.",
+    tag: "one signature, one transfer",
+  },
+  {
+    n: "3",
+    title: "Credits land, calls draw",
+    desc: "A watcher reads the reference on-chain, verifies mint, amount and recipient, then credits the balance. Calls draw from it, one receipt each.",
+    tag: "getSignaturesForAddress(reference)",
+  },
+];
+
 const INVARIANTS = [
   {
     icon: KeyRound,
@@ -111,8 +133,8 @@ const INVARIANTS = [
   },
   {
     icon: Link2Off,
-    title: "No per-call chain",
-    desc: "x402 funds a balance; calls draw against it off-chain. Settling an empty poll on-chain would cost more than the call.",
+    title: "Chain for deposits, not calls",
+    desc: "Solana settles the deposit; calls then draw against the balance off-chain. A $0.0005 empty poll should never cost a signature.",
     tag: "invariant 04",
   },
   {
@@ -188,15 +210,15 @@ const AUDIENCES = [
 
 const ROADMAP = [
   { when: "Live", what: "Catalog, 20 seeded beats, English article clusters, poll, delta, webhooks, live terminal" },
-  { when: "Now", what: "Topic queries for a 100-beat catalog; resolve, receipts, the meter and prepaid keys" },
-  { when: "Next", what: "Brief and watch verbs, MCP server, WebSocket push, Telegram + Discord, lead-time harness" },
-  { when: "Later", what: "x402 self-serve settlement, ACP jobs, prepaid and invoice rails, desk export" },
+  { when: "Now", what: "Solana deposits — intent, Solana Pay checkout, deposit watcher, ledger credit — plus the 100-beat catalog" },
+  { when: "Next", what: "Wallet connect, x402 (SVM) self-serve calls, brief and watch verbs, MCP server, lead-time harness" },
+  { when: "Later", what: "The Pleiades SPL credit token as a deposit rail, ACP jobs, desk export" },
 ];
 
 const FAQ = [
   {
     q: "What is actually live today?",
-    a: "Live now: the catalog, agent tool schema, pricing, stats, poll, delta and webhooks, against 20 seeded English beats that each carry their own article cluster. Not live yet: resolve, receipts, brief, watch, the meter, the MCP server and x402 settlement. Live ingestion is paused while the topic queries are rebuilt for a 100-beat catalog, so the terminal shows the current state of the graph rather than a moving one.",
+    a: "Live now: the catalog, agent tool schema, pricing, stats, poll, delta and webhooks, against 20 seeded English beats that each carry their own article cluster. Not live yet: Solana deposits, the meter, resolve, receipts, brief, watch, the MCP server and x402 settlement. Live ingestion is paused while the topic queries are rebuilt for a 100-beat catalog, so the terminal shows the current state of the graph rather than a moving one.",
   },
   {
     q: "Is this a search engine?",
@@ -211,12 +233,20 @@ const FAQ = [
     a: "Beats refresh on a 60-minute target with a 90-minute freshness SLO, and market beats are built to tighten to 5\u201315 minutes. Every item carries first_indexed_at next to published_at, so lead time is a field in the payload rather than a marketing line. The public comparison harness ships with the next milestone; until then the board above is illustrative.",
   },
   {
-    q: "How do I get access?",
-    a: "Polling is free while the meter is wired, so early access is operator-granted rather than self-serve. Send a note with your use case — trading, newsroom, agent product — and you get access plus a starting balance when billing turns on. Every metered call will then return a receipt you can reconcile in USD micros.",
+    q: "How do I fund an account?",
+    a: "Create a deposit, pay it from any Solana wallet, and the credits land once the transfer confirms. We take USDC, USDT and SOL; a unique reference key ties the payment to your deposit, so reconciliation is exact rather than a guess. The minimum deposit is $1, credits are held in USD micros, and they do not expire.",
   },
   {
     q: "Can my agent pay for itself?",
-    a: "That is the design, and it is not live yet. x402 will take a deposit in USDC on Base so calls draw against a balance off-chain, meaning a $0.0005 empty poll never touches the chain. A default daily cap of $0.50 and 50 distinct beats per identity keeps a looping tool call from becoming an incident.",
+    a: "That is the design, and it is not live yet. x402 on Solana lets an agent settle from a funded balance, and the deposit itself is a plain SPL transfer, so a $0.0005 empty poll never touches the chain. A default daily cap of $0.50 and 50 distinct beats per identity keeps a looping tool call from becoming an incident.",
+  },
+  {
+    q: "Which tokens do you accept?",
+    a: "USDC and USDT (SPL) and native SOL. Deposits are credited in USD micros at the quoted rate, and the receipt keeps both the rate and the transaction signature. Send the wrong mint or the wrong network and the transfer cannot be credited — check the mint address in the deposit response before you sign.",
+  },
+  {
+    q: "Is the Pleiades token an investment?",
+    a: "No. It is a usage credit and nothing else: not a share, not a yield, not a claim on revenue, with no promised market and no buyback. It is planned as a standard SPL token with a fixed supply and no mint authority, accepted as a deposit rail at a quoted rate. Treat any other description of it as wrong.",
   },
 ];
 
@@ -281,6 +311,7 @@ export default function Home() {
           <span className="nav-links">
             <a className="nav-link" href="#contract">How it works</a>
             <a className="nav-link" href="#pricing">Pricing</a>
+            <a className="nav-link" href="#settlement">Solana</a>
             <a className="nav-link" href="#install">API</a>
             <a className="nav-link" href="#faq">FAQ</a>
           </span>
@@ -315,7 +346,7 @@ export default function Home() {
               <a className="btn-ghost" href="#install">Explore the API</a>
             </div>
             <p className="hero-tiny">
-              English only · at most 8 items a call · no article bodies · free while we are in early access
+              deposits on Solana · USDC · USDT · SOL · English only · ≤8 items a call · free while we are in early access
             </p>
 
             <div className="mock" style={{ marginTop: 46 }}>
@@ -711,7 +742,7 @@ export default function Home() {
               ))}
             </div>
             <p className="hero-tiny" style={{ marginTop: 18 }}>
-              published ahead of the meter · calling is free today, billing turns on with the ledger
+              credits are USD micros · paid in USDC, USDT or SOL on Solana · calling is free while the meter is wired
             </p>
 
             <div className="showcase">
@@ -750,44 +781,123 @@ est. agent-day         $0.14
               <span className="sec-eyebrow">
                 06 · Settlement <span className="eyebrow-tag" style={{ marginLeft: 8 }}>next</span>
               </span>
-              <h2 className="sec-title">402 is the onboarding.</h2>
+              <h2 className="sec-title">Deposits on Solana. Calls off-chain.</h2>
               <p className="sec-sub">
-                An unprovisioned agent has to decide whether to pay without asking a human. The
-                challenge will state what it is buying, what it costs, and where the schema lives.
+                You fund the meter once, on Solana, and every call after that draws from the
+                balance with no signature and no transaction. A $0.0005 empty poll should never
+                cost a fee.
               </p>
             </div>
 
             <div className="showcase">
               <div>
-                <h3>Deposit once. Draw off-chain.</h3>
+                <h3>One deposit, then pay per wake-up.</h3>
                 <p>
-                  The same retry loop works on x402, prepaid credit and invoice. A $5 card top-up
-                  loses about 9% to processing; the same deposit in USDC on Base loses about
-                  0.016%. That — not &ldquo;agents have wallets&rdquo; — is why the crypto rail
-                  exists.
+                  Create a deposit, pay it from any Solana wallet, and the credits land when the
+                  transfer confirms. Calls then draw micros from the balance instantly, so asking
+                  every hour stays rational.
                 </p>
                 <ul>
-                  <li>No per-call chain write: a deposit funds a balance, calls draw against it</li>
-                  <li>Settling an empty poll on-chain would cost more than the call</li>
-                  <li>One retry loop for x402, prepaid and invoice</li>
+                  <li>USDC, USDT or SOL, credited in USD micros at the quoted rate</li>
+                  <li>A unique reference key per deposit, so reconciliation is exact</li>
+                  <li>Matched on mint, amount and recipient before anything is credited</li>
+                  <li>Solana fees are a fraction of a cent, not 9% of a card top-up</li>
                 </ul>
               </div>
               <div className="code">
-                <div className="code-bar">HTTP 402 Payment Required · next</div>
-                <pre>{`nonce: n_01JQ8ZK4M2X
-{
-  "amount_micros": 4000,
-  "currency": "USDC",
-  "accepts": ["x402-base", "prepaid", "invoice"],
-  "min_deposit_micros": { "x402-base": 5000000 },
-  "resource": {
-    "call": "delta",
-    "beat_id": "b_dab9c000dca5",
-    "beat_label": "EU AI Act",
-    "description": "Items newer than cursor."
-  },
-  "docs": "/v1/tools"
+                <div className="code-bar">POST /v1/deposits · 201 Created</div>
+                <pre>{`{
+  "deposit_id": "dep_01JQ8ZK4M2X",
+  "rail": "solana",
+  "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+  "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  "symbol": "USDC",
+  "amount": "5.00",
+  "reference": "7Yq3mQbK1sVpNcRfH2xWtZ9dLgUeA4nT6jPkM8vBsXo",
+  "expires_at": "2026-09-12T12:30:00Z",
+  "pay_url": "solana:9xQeTreasury…?amount=5&spl-token=EPjF…&reference=7Yq3…&label=Pleiades&message=API%20credits"
 }`}</pre>
+              </div>
+            </div>
+
+            <div className="features">
+              {DEPOSIT_STEPS.map((step) => (
+                <div key={step.n} className="feature" style={{ minHeight: 220 }}>
+                  <span className="feature-icon">{step.n}</span>
+                  <h3 className="feature-title">{step.title}</h3>
+                  <p className="feature-desc">{step.desc}</p>
+                  <span className="feature-tag">{step.tag}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* THE TOKEN */}
+        <section className="scaffold" id="token">
+          <div className="wrap">
+            <div className="sec-head">
+              <span className="sec-eyebrow">
+                The token <span className="eyebrow-tag" style={{ marginLeft: 8 }}>planned</span>
+              </span>
+              <h2 className="sec-title">A usage key. Not an investment.</h2>
+              <p className="sec-sub">
+                The Pleiades token exists to buy API credits and nothing else. If a description of
+                it sounds like more than that, the description is wrong.
+              </p>
+            </div>
+
+            <div className="showcase">
+              <div>
+                <h3>One token, one job: credits.</h3>
+                <p>
+                  Deposits are always credited in USD micros, whatever you pay with. Pay in USDC,
+                  USDT, SOL or the Pleiades token; the token is converted at the quoted rate and
+                  lands as credits, and the receipt records the rate that was used.
+                </p>
+                <ul>
+                  <li>Standard SPL token on Solana, fixed supply, mint authority revoked</li>
+                  <li>Accepted as a deposit rail beside USDC, USDT and SOL</li>
+                  <li>No yield, no buyback, no claim on revenue, no promised market</li>
+                  <li>Treasury and authorities held in a multisig, never a hot wallet</li>
+                </ul>
+              </div>
+              <div className="mock">
+                <div className="mock-bar">
+                  <span className="mock-dots"><span /><span /><span /></span>
+                  <span className="mock-title">token plan · not minted</span>
+                </div>
+                <div className="mock-feed">
+                  <div className="mock-row">
+                    <span className="k">Standard</span>
+                    <span className="v">SPL Token, 6 decimals</span>
+                    <span className="s">Solana</span>
+                  </div>
+                  <div className="mock-row">
+                    <span className="k">Supply</span>
+                    <span className="v">Fixed at mint, mint authority revoked</span>
+                    <span className="s">no inflation</span>
+                  </div>
+                  <div className="mock-row">
+                    <span className="k">Authority</span>
+                    <span className="v">Multisig treasury, no upgrade path</span>
+                    <span className="s">multisig</span>
+                  </div>
+                  <div className="mock-row">
+                    <span className="k">Accepted as</span>
+                    <span className="v">A deposit rail, quoted per deposit</span>
+                    <span className="s">credits only</span>
+                  </div>
+                  <div className="mock-row">
+                    <span className="k">Redeemable for</span>
+                    <span className="v">API credits that never expire</span>
+                    <span className="s">nothing else</span>
+                  </div>
+                </div>
+                <div className="mock-foot">
+                  <span>no presale promised</span>
+                  <span style={{ marginLeft: "auto" }}>no market promised</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1095,6 +1205,7 @@ beat_id = "b_" + sha256(canonical).hexdigest()[:12]
                 <a href="/dashboard">Terminal</a>
                 <a href="#contract">How it works</a>
                 <a href="#pricing">Pricing</a>
+                <a href="#settlement">Solana</a>
                 <a href="#install">API</a>
                 <a href="#faq">FAQ</a>
               </div>

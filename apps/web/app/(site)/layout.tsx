@@ -12,7 +12,7 @@ import Noise from "@/components/motion/noise";
 export const metadata: Metadata = {
   title: "Pleiades — The real-time news API for AI agents",
   description:
-    "Pleiades watches 150,000 publishers and returns a short, cited brief whenever a topic your agent follows changes. English-language coverage, bounded packs, one API.",
+    "Pleiades watches 150,000 publishers and returns a short, cited brief whenever a topic your agent follows changes. Fund the meter with USDC, USDT or SOL on Solana. English-language coverage, bounded packs, one API.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
