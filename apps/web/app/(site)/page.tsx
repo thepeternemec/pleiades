@@ -43,9 +43,9 @@ interface Catalog {
 }
 
 const RAILS = [
+  "x402 · Solana",
   "Solana Pay",
   "USDC · USDT · SOL",
-  "x402 · SVM",
   "MCP",
   "REST API",
   "WebSocket",
@@ -133,8 +133,8 @@ const INVARIANTS = [
   },
   {
     icon: Link2Off,
-    title: "Chain for deposits, not calls",
-    desc: "Solana settles the deposit; calls then draw against the balance off-chain. A $0.0005 empty poll should never cost a signature.",
+    title: "Two rails, one balance",
+    desc: "x402 buys a single call straight from the agent's wallet, with no account at all. A funded balance skips the chain per call. Both land in the same ledger.",
     tag: "invariant 04",
   },
   {
@@ -210,9 +210,9 @@ const AUDIENCES = [
 
 const ROADMAP = [
   { when: "Live", what: "Catalog, 20 seeded beats, English article clusters, poll, delta, webhooks, live terminal" },
-  { when: "Now", what: "Solana deposits — intent, Solana Pay checkout, deposit watcher, ledger credit — plus the 100-beat catalog" },
-  { when: "Next", what: "Wallet connect, x402 (SVM) self-serve calls, brief and watch verbs, MCP server, lead-time harness" },
-  { when: "Later", what: "The Pleiades SPL credit token as a deposit rail, ACP jobs, desk export" },
+  { when: "Now", what: "x402 on Solana — 402 challenge, USDC quotes, facilitator settlement — plus deposits and the 100-beat catalog" },
+  { when: "Next", what: "Wallet connect, prepaid balance drawdown, brief and watch verbs, MCP server, lead-time harness" },
+  { when: "Later", what: "The Pleiades SPL credit token, batched x402 settlement, ACP jobs, desk export" },
 ];
 
 const FAQ = [
@@ -238,7 +238,7 @@ const FAQ = [
   },
   {
     q: "Can my agent pay for itself?",
-    a: "That is the design, and it is not live yet. x402 on Solana lets an agent settle from a funded balance, and the deposit itself is a plain SPL transfer, so a $0.0005 empty poll never touches the chain. A default daily cap of $0.50 and 50 distinct beats per identity keeps a looping tool call from becoming an incident.",
+    a: "That is the whole point of the x402 rail, and it is not live yet. The agent hits a call, gets a 402 quoting the price in USDC, signs a Solana transfer and retries the same request, so it can buy news without an account, a key or a human. A deposit rail skips the chain per call for agents that poll on a schedule. A default daily cap of $0.50 and 50 distinct beats per identity keeps a looping tool call from becoming an incident.",
   },
   {
     q: "Which tokens do you accept?",
@@ -247,6 +247,14 @@ const FAQ = [
   {
     q: "Is the Pleiades token an investment?",
     a: "No. It is a usage credit and nothing else: not a share, not a yield, not a claim on revenue, with no promised market and no buyback. It is planned as a standard SPL token with a fixed supply and no mint authority, accepted as a deposit rail at a quoted rate. Treat any other description of it as wrong.",
+  },
+  {
+    q: "What is x402?",
+    a: "An open payment scheme built on HTTP 402. The server answers an unpaid request with the price and the asset it wants; the client pays and retries the identical request with proof of payment. On Solana that is a USDC transfer, partially signed by the agent's wallet and completed by a facilitator that also covers the network fee.",
+  },
+  {
+    q: "Does every call cost a transaction?",
+    a: "It depends which rail you are on. With x402, one call is one payment. On the prepaid rail only the deposit touches the chain and calls draw from the balance off-chain, which is why hourly polling is cheaper there. Both rails write the same receipt, so you can always see which one a call used.",
   },
 ];
 
@@ -336,7 +344,8 @@ export default function Home() {
             <p className="lede">
               Pleiades watches 150,000 publishers around the clock and returns a short, cited brief
               whenever a topic your agent follows changes. Your agent asks on a schedule; Pleiades
-              answers what moved and who reported it — at publish time, not at trend time.
+              answers what moved and who reported it. It pays for each answer itself, in USDC on
+              Solana, over x402.
             </p>
 
             <div className="hero-cta">
@@ -346,7 +355,7 @@ export default function Home() {
               <a className="btn-ghost" href="#install">Explore the API</a>
             </div>
             <p className="hero-tiny">
-              deposits on Solana · USDC · USDT · SOL · English only · ≤8 items a call · free while we are in early access
+              x402 on Solana · paid per call from the agent's wallet · USDC · USDT · SOL · English only · free while the meter is wired
             </p>
 
             <div className="mock" style={{ marginTop: 46 }}>
@@ -742,7 +751,7 @@ export default function Home() {
               ))}
             </div>
             <p className="hero-tiny" style={{ marginTop: 18 }}>
-              credits are USD micros · paid in USDC, USDT or SOL on Solana · calling is free while the meter is wired
+              credits are USD micros · priced the same on both rails · x402 pays per call, a deposit pays once
             </p>
 
             <div className="showcase">
@@ -774,36 +783,129 @@ est. agent-day         $0.14
           </div>
         </section>
 
-        {/* 06 SETTLEMENT */}
-        <section className="scaffold" id="settlement">
+        {/* THE HYPER-NEWS AGENT */}
+        <section className="scaffold" id="agent">
           <div className="wrap">
             <div className="sec-head">
-              <span className="sec-eyebrow">
-                06 · Settlement <span className="eyebrow-tag" style={{ marginLeft: 8 }}>next</span>
-              </span>
-              <h2 className="sec-title">Deposits on Solana. Calls off-chain.</h2>
+              <span className="sec-eyebrow">The hyper-news agent</span>
+              <h2 className="sec-title">An agent that buys its own news.</h2>
               <p className="sec-sub">
-                You fund the meter once, on Solana, and every call after that draws from the
-                balance with no signature and no transaction. A $0.0005 empty poll should never
-                cost a fee.
+                It wakes on a schedule, asks what moved, and pays for the answer from its own
+                Solana wallet. No account, no API key, no invoice, no human.
               </p>
             </div>
 
             <div className="showcase">
               <div>
-                <h3>One deposit, then pay per wake-up.</h3>
+                <h3>Fourteen cents buys a day of vigilance.</h3>
                 <p>
-                  Create a deposit, pay it from any Solana wallet, and the credits land when the
-                  transfer confirms. Calls then draw micros from the balance instantly, so asking
-                  every hour stays rational.
+                  Most wakes return nothing, and nothing is cheap. When a beat does move, the same
+                  agent pays four tenths of a cent for a bounded, cited pack and moves on. The cost
+                  tracks the news, not the seat.
                 </p>
                 <ul>
-                  <li>USDC, USDT or SOL, credited in USD micros at the quoted rate</li>
-                  <li>A unique reference key per deposit, so reconciliation is exact</li>
-                  <li>Matched on mint, amount and recipient before anything is credited</li>
-                  <li>Solana fees are a fraction of a cent, not 9% of a card top-up</li>
+                  <li>Wake on a schedule — a minute on a market beat, hourly on the rest</li>
+                  <li>Pay per answer over x402, straight from the agent&rsquo;s wallet</li>
+                  <li>Nothing moved is a real answer, and the cheapest one</li>
+                  <li>Every call returns a receipt the operator can reconcile</li>
                 </ul>
               </div>
+              <div className="mock">
+                <div className="mock-bar">
+                  <span className="mock-dots"><span /><span /><span /></span>
+                  <span className="mock-title">agent loop · one beat · one day</span>
+                  <span className="mock-live">x402</span>
+                </div>
+                <div className="mock-feed">
+                  <div className="mock-row">
+                    <span className="k">06:00 wake</span>
+                    <span className="v">poll · b_bb964843350e · NVIDIA</span>
+                    <span className="s">$0.0005</span>
+                  </div>
+                  <div className="mock-row">
+                    <span className="k">06:00 nothing</span>
+                    <span className="v">moved: false · cursor held</span>
+                    <span className="s">$0.0005</span>
+                  </div>
+                  <div className="mock-row">
+                    <span className="k">06:30 wake</span>
+                    <span className="v">moved: true · pack · 3 items · 14 sources</span>
+                    <span className="s">$0.004</span>
+                  </div>
+                  <div className="mock-row">
+                    <span className="k">06:30 cite</span>
+                    <span className="v">Reuters · published 06:41 · indexed 06:43</span>
+                    <span className="s">cited</span>
+                  </div>
+                  <div className="mock-row">
+                    <span className="k">06:31 write</span>
+                    <span className="v">memo to the desk, source URL only</span>
+                    <span className="s">no bodies</span>
+                  </div>
+                </div>
+                <div className="mock-foot">
+                  <span>48 wakes a day</span>
+                  <span>≈ $0.14</span>
+                  <span style={{ marginLeft: "auto" }}>paid from the agent&rsquo;s wallet</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 06 PAYMENT */}
+        <section className="scaffold" id="settlement">
+          <div className="wrap">
+            <div className="sec-head">
+              <span className="sec-eyebrow">
+                06 · Payment <span className="eyebrow-tag" style={{ marginLeft: 8 }}>next</span>
+              </span>
+              <h2 className="sec-title">The agent pays its own way.</h2>
+              <p className="sec-sub">
+                Two rails onto one balance. x402 lets an agent buy a single call from its own
+                Solana wallet with no account and no invoice. A deposit lets a desk fund an account
+                once and draw down per call.
+              </p>
+            </div>
+
+            <div className="showcase">
+              <div>
+                <span className="sec-eyebrow">Rail A · x402</span>
+                <h3>402 is the whole signup.</h3>
+                <p>
+                  The agent calls poll, gets a 402 quoting that exact call in USDC, signs a Solana
+                  transfer and retries. Nothing is issued to it beforehand — the payment is the
+                  authentication, and the wallet is the account.
+                </p>
+                <ul>
+                  <li>The quote is bound to the call: resource, amount, asset and network</li>
+                  <li>The facilitator covers the Solana fee, so an empty poll stays cheap</li>
+                  <li>Retry the identical request with the payment header and get the pack</li>
+                  <li>Settlement is recorded, so one transaction can never pay twice</li>
+                </ul>
+              </div>
+              <div className="code">
+                <div className="code-bar">HTTP 402 Payment Required · Solana</div>
+                <pre>{`{
+  "x402Version": 2,
+  "accepts": [{
+    "scheme": "exact",
+    "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+    "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+    "pay_to": "9xQeTreasury…",
+    "max_amount_required": "4000",
+    "resource": "POST /v1/poll"
+  }]
+}
+
+// the agent signs the transfer, then retries:
+POST /v1/poll
+X-PAYMENT: <base64 signed transaction>
+→ 200 OK · pack · 3 items · receipt r_01JQ8ZK4M2X`}</pre>
+              </div>
+            </div>
+
+            <div className="showcase">
               <div className="code">
                 <div className="code-bar">POST /v1/deposits · 201 Created</div>
                 <pre>{`{
@@ -817,6 +919,21 @@ est. agent-day         $0.14
   "expires_at": "2026-09-12T12:30:00Z",
   "pay_url": "solana:9xQeTreasury…?amount=5&spl-token=EPjF…&reference=7Yq3…&label=Pleiades&message=API%20credits"
 }`}</pre>
+              </div>
+              <div>
+                <span className="sec-eyebrow">Rail B · prepaid</span>
+                <h3>Fund once. Then skip the chain.</h3>
+                <p>
+                  A desk polling every hour should not sign a transaction every hour. Deposit USDC,
+                  USDT or SOL once and calls draw micros from the balance instantly — no signature,
+                  no fee, no waiting on a block.
+                </p>
+                <ul>
+                  <li>USDC, USDT or SOL, credited in USD micros at the quoted rate</li>
+                  <li>A unique reference key per deposit, so reconciliation is exact</li>
+                  <li>Matched on mint, amount and recipient before anything is credited</li>
+                  <li>Solana fees are a fraction of a cent, not 9% of a card top-up</li>
+                </ul>
               </div>
             </div>
 
