@@ -10,7 +10,7 @@ export default function SiteFooter() {
           </div>
           <div className="footer-links">
             <a href="/dashboard">Terminal</a>
-            <a href="/solana">Why Solana</a>
+            <a href="/payment">Payment</a>
             <a href="/pricing">Pricing</a>
             <a href="/docs">Docs</a>
             <a href="/faq">FAQ</a>

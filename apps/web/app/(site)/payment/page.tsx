@@ -3,23 +3,23 @@ import SiteFooter from "@/components/site/site-footer";
 import { DEPOSIT_STEPS } from "@/components/site/content";
 
 export const metadata = {
-  title: "Why Solana",
+  title: "Payment",
   description:
-    "Pleiades is paid for on Solana: per call over x402 from an agent's own wallet, or drawn from a balance funded with USDC, USDT or SOL.",
+    "Pleiades is metered per answer: pay per call from an agent's own wallet, or draw down a balance funded with USDC, USDT or SOL.",
 };
 
 export default function Solana() {
   return (
     <>
-      <SiteNav active="/solana" />
+      <SiteNav active="/payment" />
       <main>
         <div className="page-head">
           <div className="wrap">
-            <span className="sec-eyebrow">Why Solana</span>
-            <h1 className="sec-title">Money that moves as fast as the news.</h1>
+            <span className="sec-eyebrow">Payment</span>
+            <h1 className="sec-title">Pay per answer. Nothing else.</h1>
             <p className="sec-sub">
-              No invoices, no seat licences, no 9% card fees. Your agent carries a wallet and buys
-              exactly the answers it needs.
+              No seats, no subscription, no invoice to approve. Your agent pays a fraction of a cent
+              each time it asks, and nothing when the answer is &ldquo;nothing moved&rdquo;.
             </p>
           </div>
         </div>
@@ -38,7 +38,7 @@ export default function Solana() {
 
             <div className="showcase">
               <div>
-                <span className="sec-eyebrow">Rail A · x402</span>
+                <span className="sec-eyebrow">Rail A · pay as you go</span>
                 <h3>Nothing to sign up for.</h3>
                 <p>
                   The agent asks for an answer, we quote it in USDC, it pays from its wallet and asks
@@ -168,10 +168,10 @@ export default function Solana() {
           <div className="wrap">
             <div className="sec-head">
               <span className="sec-eyebrow">The economics</span>
-              <h2 className="sec-title">Where the other 9% goes.</h2>
+              <h2 className="sec-title">Why the rail matters.</h2>
               <p className="sec-sub">
-                Card processing is priced for human purchases. Metered machine calls are not human
-                purchases, and should not be priced like them.
+                Card processing is priced for human purchases. A metered machine call is not a human
+                purchase, and pricing it like one is what makes sub-cent answers impossible.
               </p>
             </div>
             <div className="features">
@@ -192,10 +192,10 @@ export default function Solana() {
                 <span className="feature-tag">≈ $0.0008</span>
               </div>
               <div className="feature" style={{ minHeight: 200 }}>
-                <h3 className="feature-title">Why it matters to an agent</h3>
+                <h3 className="feature-title">Why an agent can use it</h3>
                 <p className="feature-desc">
-                  An agent that cannot hold a card can hold a wallet. Paying per call is what lets it
-                  buy its own news without a human in the loop.
+                  An agent that cannot hold a card can hold a wallet. Paying per answer is what lets
+                  it buy its own news with no human in the loop.
                 </p>
                 <span className="feature-tag">machine-native payment</span>
               </div>
@@ -257,7 +257,7 @@ export default function Solana() {
               <a className="btn-primary" href="/docs/payment">Read the payment docs</a>
               <a className="btn-ghost" href="/pricing">See the price card</a>
             </div>
-            <p className="cta-tiny">USDC · USDT · SOL · testnet available on request</p>
+            <p className="cta-tiny">metered per answer · USDC, USDT or SOL · testnet available on request</p>
           </div>
         </section>
       </main>

@@ -11,7 +11,7 @@ live: https://pleiades.news
 api: https://dnnoypytdfvsdenykooq.supabase.co/functions/v1/api
 openapi: https://dnnoypytdfvsdenykooq.supabase.co/functions/v1/api/openapi.json
 mcp: https://pleiades.news/mcp (interface published, not served yet)
-payments: x402 on Solana, or a prepaid USDC balance
+payments: metered per answer; x402 or a prepaid USDC balance settled on Solana
 license: MIT
 ---
 
@@ -40,9 +40,12 @@ license: MIT
   <a href="https://pleiades.news/docs">Docs</a>
 </p>
 
-**The news layer for Solana agents.** Your agent asks one question on a schedule — *has this
-moved?* — and pays a fraction of a cent for the answer, in USDC from its own wallet. No account,
-no API key, no invoice.
+**The news layer for AI agents.** Your agent asks one question on a schedule — *has this moved?* —
+and pays a fraction of a cent for the answer. Any model, any framework, any runtime.
+
+Payment is settled on Solana, because it is the only rail where a four-tenths-of-a-cent answer is
+economical and an agent can pay without a human. That is a detail of the billing model, not a
+qualification on who can use it.
 
 Live at **[pleiades.news](https://pleiades.news)** · API at
 `https://dnnoypytdfvsdenykooq.supabase.co/functions/v1/api`

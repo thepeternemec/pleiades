@@ -4,7 +4,7 @@
  * code-box animations initialise the same way on every route.
  */
 const LINKS = [
-  { href: "/solana", label: "Why Solana" },
+  { href: "/payment", label: "Payment" },
   { href: "/pricing", label: "Pricing" },
   { href: "/docs", label: "Docs" },
   { href: "/faq", label: "FAQ" },

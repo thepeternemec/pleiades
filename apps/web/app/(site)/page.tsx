@@ -36,8 +36,8 @@ const FEATURES = [
   {
     icon: Bell,
     title: "Pays for itself",
-    desc: "Fund a balance with USDC on Solana, or let the agent buy each answer on the spot with x402. No invoices.",
-    tag: "USDC · USDT · SOL",
+    desc: "Metered per answer, so an empty check costs a twentieth of a cent. No seat licence, no subscription, no minimum spend.",
+    tag: "per answer, not per seat",
   },
   {
     icon: Plug,
@@ -79,19 +79,19 @@ export default function Home() {
         <section className="hero" id="top">
           <div className="wrap">
             <span className="eyebrow">
-              <span className="eyebrow-tag">Built on Solana</span>
+              <span className="eyebrow-tag">Agent-native</span>
               {stats?.beats ?? 20} topics live
               <span style={{ color: "var(--border-strong)" }}>·</span>
               150,000 publishers
               <span style={{ color: "var(--border-strong)" }}>·</span>
-              USDC per call
+              pay per answer
             </span>
 
-            <h1>The news layer for Solana agents.</h1>
+            <h1>The news layer for AI agents.</h1>
             <p className="lede">
               Your agent asks one question on a schedule — has this moved? — and pays a fraction of
-              a cent for the answer. USDC over x402, from its own wallet. No account, no API key, no
-              invoice.
+              a cent for the answer. Point it at the topics that matter and it tells you the moment
+              something changes, whichever model or framework it runs on.
             </p>
 
             <div className="hero-cta">
@@ -101,7 +101,7 @@ export default function Home() {
               <a className="btn-ghost" href="/docs">Read the docs</a>
             </div>
             <p className="hero-tiny">
-              pay per call · USDC · USDT · SOL · free while we are in early access
+              pay per answer · settled in USDC on Solana · free while we are in early access
             </p>
 
             <div className="mock" style={{ marginTop: 46 }}>
@@ -187,8 +187,8 @@ export default function Home() {
                 <div className="metric-label">Stories in an answer, so it fits any context window</div>
               </div>
               <div>
-                <div className="metric-num">Solana</div>
-                <div className="metric-label">Paid per call in USDC, with a receipt every time</div>
+                <div className="metric-num">1 call</div>
+                <div className="metric-label">All it takes to find out whether anything moved</div>
               </div>
             </div>
             <p className="hero-tiny" style={{ marginTop: 34 }}>
@@ -356,19 +356,21 @@ export default function Home() {
         <section className="scaffold" id="settlement">
           <div className="wrap">
             <div className="sec-head">
-              <span className="sec-eyebrow">Why Solana</span>
-              <h2 className="sec-title">Money that moves as fast as the news.</h2>
+              <span className="sec-eyebrow">Payment</span>
+              <h2 className="sec-title">Metered per answer. Settled on Solana.</h2>
               <p className="sec-sub">
-                A card top-up loses about 9% to processing. The same deposit in USDC on Solana loses
-                about 0.016%, and it clears in under a second.
+                Agent-native payment is a design choice, not a billing detail. There is no invoice to
+                raise, no seat to license, and no human needed to approve a four-tenths-of-a-cent
+                answer.
               </p>
             </div>
             <div className="showcase">
               <div>
                 <h3>Two ways to pay, one balance.</h3>
                 <p>
-                  An agent with a wallet pays per call over x402 and never signs up for anything. A
-                  desk that polls all day funds a balance once and then skips the chain entirely.
+                  An agent with a wallet can pay per call and never sign up for anything. One that
+                  polls all day funds a balance once and then skips the chain entirely. Solana
+                  settles it, because it is the only rail where a sub-cent answer is economical.
                 </p>
                 <ul>
                   <li>x402 — one call, one payment, no account required</li>
@@ -391,7 +393,7 @@ export default function Home() {
 }`}</pre>
               </div>
             </div>
-            <p className="more"><a href="/solana">How payment works on Solana</a></p>
+            <p className="more"><a href="/payment">How payment works</a></p>
           </div>
         </section>
 
@@ -408,7 +410,7 @@ export default function Home() {
               <a className="btn-ghost" href="/docs">Read the docs</a>
             </div>
             <p className="cta-tiny">
-              built on Solana · USDC · USDT · SOL · free while we are in early access
+              metered per answer · no seat licence · settled in USDC on Solana
             </p>
           </div>
         </section>

@@ -12,9 +12,9 @@ import Noise from "@/components/motion/noise";
 import SolanaGlow from "@/components/site/solana-glow";
 
 export const metadata: Metadata = {
-  title: "Pleiades — The real-time news API for AI agents",
+  title: "Pleiades — The news layer for AI agents",
   description:
-    "Pleiades watches 150,000 publishers and returns a short, cited brief whenever a topic your agent follows changes. Agents pay per call over x402 on Solana, or draw down a USDC balance. English-language coverage, bounded packs, one API.",
+    "Pleiades watches 150,000 publishers and answers one question on a schedule: has this moved? A short, cited brief when it has, and a fraction of a cent charged per answer, settled in USDC on Solana.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
