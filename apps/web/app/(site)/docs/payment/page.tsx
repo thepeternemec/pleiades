@@ -187,6 +187,64 @@ export default function DocsPayment() {
         so you can integrate before billing exists.
       </p>
 
+      <h2>The token, if it ships</h2>
+      <p>
+        The Pleiades token would exist to buy API credits and nothing else. That is a commitment
+        about how it will be described as much as about what it does, so it is written down here.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <strong>What it would be</strong>
+            </td>
+            <td>
+              A standard SPL token on Solana with a fixed supply and no mint authority, accepted as
+              one more deposit rail beside USDC, USDT and SOL.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong>What it would buy</strong>
+            </td>
+            <td>
+              API credits, priced in USD at the moment you deposit, recorded on the receipt so
+              history never re-prices.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong>What it would never be</strong>
+            </td>
+            <td>
+              Not a share, not a yield, not a claim on revenue. No promised market, no buyback, no
+              presale. It is a key to a meter.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Why the rail matters</h2>
+      <p>
+        Card processing is built for a person buying something once, and it is priced accordingly.
+        A metered machine call is not that, and pricing it like one is what makes sub-cent answers
+        impossible.
+      </p>
+      <ul>
+        <li>A $5 card top-up loses roughly 9% to processing — about $0.45</li>
+        <li>The same $5 in USDC on Solana costs about 0.016% — about $0.0008</li>
+        <li>
+          An agent that cannot hold a card can hold a wallet, which is what lets it buy its own news
+          with no human in the loop
+        </li>
+      </ul>
+
       <div className="docs-nav-foot">
         <a href="/docs/data">← Beats and clusters</a>
         <a href="/docs/limits">Limits and invariants →</a>

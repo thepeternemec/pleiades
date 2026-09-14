@@ -477,7 +477,7 @@ export default function Home() {
 }`}</pre>
               </div>
             </div>
-            <p className="more"><a href="/payment">How payment works</a></p>
+            <p className="more"><a href="/pricing">See how payment works</a></p>
           </div>
         </section>
 

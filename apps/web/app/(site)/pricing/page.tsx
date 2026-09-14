@@ -289,7 +289,7 @@ export default function Pricing() {
                 <span className="feature-tag">no subscription</span>
               </div>
             </div>
-            <p className="more"><a href="/payment">The full payment mechanics</a></p>
+            <p className="more"><a href="/docs/payment">The full payment reference</a></p>
           </div>
         </section>
 
@@ -435,7 +435,7 @@ GET /v1/balance
               <a className="btn-primary" href="/docs/quickstart">
                 Get started free <ArrowRight size={14} />
               </a>
-              <a className="btn-ghost" href="/payment">See how payment works</a>
+              <a className="btn-ghost" href="/docs/payment">Read the payment reference</a>
             </div>
             <p className="cta-tiny">no card · no contract · free while we are in early access</p>
           </div>
