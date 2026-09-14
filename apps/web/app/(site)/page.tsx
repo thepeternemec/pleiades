@@ -96,20 +96,35 @@ const FEATURES = [
 ];
 
 const SOURCES = [
+  // Wires and financial press
   "Reuters",
   "Bloomberg",
   "The Associated Press",
   "Financial Times",
+  "The Wall Street Journal",
   "CNBC",
   "The Economist",
   "BBC News",
   "Nikkei Asia",
   "Al Jazeera",
+  "South China Morning Post",
+  // Technology
   "TechCrunch",
   "The Verge",
-  "South China Morning Post",
+  "Ars Technica",
+  "Wired",
+  // Crypto desks
+  "CoinDesk",
+  "Cointelegraph",
+  "The Block",
+  "Decrypt",
+  "Blockworks",
+  "DL News",
+  "Unchained",
+  "The Defiant",
+  "Bitcoin Magazine",
+  "Protos",
 ];
-
 const STEPS = [
   {
     n: "1",
@@ -267,7 +282,7 @@ export default function Home() {
           <div className="wrap">
             <span className="marquee-strip-label">Coverage includes</span>
           </div>
-          <Marquee speed={38} gap="2.75rem" pauseOnHover>
+          <Marquee speed={52} gap="2.75rem" pauseOnHover>
             <div className="rail-items">
               {SOURCES.map((source) => (
                 <span key={source} className="rail-item"><i />{source}</span>

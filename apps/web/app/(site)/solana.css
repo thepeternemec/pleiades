@@ -522,3 +522,15 @@
     animation: none;
   }
 }
+
+/* Publication names read better in their real case than in the uppercase
+   transport-rail treatment, so the coverage strip opts out of it. */
+.marquee-strip .rail-item {
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: 12.5px;
+  transition: color 0.15s;
+}
+.marquee-strip .rail-item:hover {
+  color: #fff;
+}
