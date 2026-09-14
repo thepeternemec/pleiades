@@ -5,7 +5,7 @@ import Marquee from "@/components/ui/marquee/marquee";
 import SiteNav from "@/components/site/site-nav";
 import SiteFooter from "@/components/site/site-footer";
 import { usePleiadesStats } from "@/components/site/use-stats";
-import { PRICES, RAILS } from "@/components/site/content";
+import { PRICES } from "@/components/site/content";
 
 /** Benefit-led, in the order a buyer cares about them. */
 const FEATURES = [
@@ -260,17 +260,6 @@ export default function Home() {
                 : `${stats?.beats ?? 20} topics configured · ingestion paused while the topic catalog is rebuilt`}
             </p>
           </div>
-        </section>
-
-        {/* RAILS */}
-        <section className="rail">
-          <Marquee speed={40} gap="2.5rem" pauseOnHover>
-            <div className="rail-items">
-              {RAILS.map((r) => (
-                <span key={r} className="rail-item"><i />{r}</span>
-              ))}
-            </div>
-          </Marquee>
         </section>
 
         {/* COVERAGE */}
