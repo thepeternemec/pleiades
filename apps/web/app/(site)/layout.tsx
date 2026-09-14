@@ -10,6 +10,7 @@ import MotionEnhance from "@/components/motion";
 import GradualBlur from "@/components/motion/gradual-blur";
 import Noise from "@/components/motion/noise";
 import SolanaGlow from "@/components/site/solana-glow";
+import GridField from "@/components/site/grid-field";
 
 export const metadata: Metadata = {
   title: "Pleiades — The news layer for AI agents",
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="sol-glow-host" aria-hidden="true">
           <SolanaGlow />
         </div>
+        <GridField />
         <div className="aurora-layer" aria-hidden="true">
           {/* Solana brand colours: purple into green. */}
           <SoftAurora color1="#9945ff" color2="#14f195" brightness={0.9} />

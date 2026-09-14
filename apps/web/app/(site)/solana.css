@@ -376,3 +376,149 @@
   margin-top: 40px;
   max-width: 860px;
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   Drifting technical grid — the layer between the colour blooms and the
+   aurora. Masked to the top so it never competes with body copy.
+   ══════════════════════════════════════════════════════════════════ */
+.grid-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: calc(0.55 * var(--aurora-fade, 1));
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.055) 1px, transparent 1px);
+  background-size: 62px 62px;
+  -webkit-mask-image: radial-gradient(125% 85% at 50% 0%, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 74%);
+  mask-image: radial-gradient(125% 85% at 50% 0%, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 74%);
+  animation: grid-drift 26s linear infinite;
+}
+@keyframes grid-drift {
+  from {
+    background-position: 0 0, 0 0;
+  }
+  to {
+    background-position: 62px 62px, 62px 62px;
+  }
+}
+
+/* ── Card with a live mini-widget in its head ─────────────────────── */
+.feature.viz-card {
+  padding: 0;
+}
+.feature.viz-card .feature-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 24px 26px 26px;
+}
+.viz {
+  height: 136px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border-default);
+  background: #050505;
+  display: grid;
+  align-content: center;
+  gap: 9px;
+  font: 11px/1.5 var(--font-mono), monospace;
+  overflow: hidden;
+}
+.viz-line {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+.viz-key {
+  color: var(--text-primary);
+}
+.viz-val {
+  margin-left: auto;
+  color: var(--text-muted);
+}
+.viz-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border-strong);
+  flex: none;
+}
+.viz-dot.on {
+  background: var(--sol-green);
+  box-shadow: 0 0 0 3px rgba(20, 241, 149, 0.13);
+}
+.viz-dots {
+  display: flex;
+  gap: 5px;
+}
+.viz-dots i {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: #1a1a1a;
+  display: block;
+}
+.viz-dots i.on {
+  background: var(--sol-gradient);
+}
+.viz-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: #1a1a1a;
+  overflow: hidden;
+}
+.viz-bar i {
+  display: block;
+  height: 100%;
+  background: var(--sol-gradient);
+  animation: viz-grow 1.6s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@keyframes viz-grow {
+  from {
+    width: 0 !important;
+  }
+}
+.viz-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.viz-chip {
+  padding: 3px 9px;
+  border: 1px solid var(--border-default);
+  border-radius: 999px;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.viz-chip.on {
+  border-color: rgba(20, 241, 149, 0.4);
+  color: var(--sol-green);
+}
+
+/* ── Labelled marquee strip ───────────────────────────────────────── */
+.marquee-strip {
+  border-block: 1px solid var(--border-default);
+  padding: 18px 0 20px;
+  overflow: hidden;
+}
+.marquee-strip-label {
+  display: block;
+  margin-bottom: 12px;
+  text-align: center;
+  font: 10px var(--font-mono), monospace;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-ghost);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grid-field {
+    animation: none;
+  }
+  .viz-bar i {
+    animation: none;
+  }
+}

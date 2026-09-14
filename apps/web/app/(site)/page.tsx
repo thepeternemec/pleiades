@@ -14,37 +14,100 @@ const FEATURES = [
     title: "Hear it at publish time",
     desc: "Your agent asks on a schedule, so it learns about a story when it breaks rather than when it trends.",
     tag: "a question, not a feed",
+    viz: (
+      <>
+        <div className="viz-line"><span className="viz-dot on" /><span className="viz-key">NVIDIA</span><span className="viz-val">3 new</span></div>
+        <div className="viz-line"><span className="viz-dot" /><span>published</span><span className="viz-val">06:41Z</span></div>
+        <div className="viz-line"><span className="viz-dot on" /><span>indexed</span><span className="viz-val">06:43Z</span></div>
+        <div className="viz-bar"><i style={{ width: "86%" }} /></div>
+      </>
+    ),
   },
   {
     icon: Filter,
     title: "An answer, not a pile",
     desc: "You get up to eight stories already chosen and ordered. No result page, no ranking to argue with, no scrolling.",
     tag: "≤8 stories",
+    viz: (
+      <>
+        <div className="viz-line"><span className="viz-key">pack · b_bb964843350e</span><span className="viz-val">3 of 8</span></div>
+        <div className="viz-dots">
+          <i className="on" /><i className="on" /><i className="on" /><i /><i /><i /><i /><i />
+        </div>
+        <div className="viz-line"><span>ranked by publication time</span></div>
+      </>
+    ),
   },
   {
     icon: Coins,
     title: "Cheap to ask often",
     desc: "Most checks come back empty, and an empty answer costs a twentieth of a cent. Asking every hour is affordable.",
     tag: "$0.0005 when nothing moved",
+    viz: (
+      <>
+        <div className="viz-line"><span className="viz-key">48 checks today</span><span className="viz-val">$0.14</span></div>
+        <div className="viz-bar"><i style={{ width: "93%" }} /></div>
+        <div className="viz-line"><span>47 came back empty</span><span className="viz-val">$0.0005 each</span></div>
+      </>
+    ),
   },
   {
     icon: FileCheck,
     title: "Cited to the publisher",
     desc: "Every story carries the publisher's own link, name and timestamp. We hand you the signal, never the article.",
     tag: "source URL on every item",
+    viz: (
+      <>
+        <div className="viz-line"><span className="viz-key">Reuters</span><span className="viz-val">cited</span></div>
+        <div className="viz-line"><span>reuters.com/markets/…</span></div>
+        <div className="viz-line"><span>no body</span><span className="viz-val">320c lede</span></div>
+      </>
+    ),
   },
   {
     icon: Bell,
     title: "Pays for itself",
     desc: "Metered per answer, so an empty check costs a twentieth of a cent. No seat licence, no subscription, no minimum spend.",
     tag: "per answer, not per seat",
+    viz: (
+      <>
+        <div className="viz-line"><span className="viz-key">balance</span><span className="viz-val">$5.00 → $4.86</span></div>
+        <div className="viz-bar"><i style={{ width: "97%" }} /></div>
+        <div className="viz-line"><span>funded once</span><span className="viz-val">USDC on Solana</span></div>
+      </>
+    ),
   },
   {
     icon: Plug,
     title: "Drops into your stack",
     desc: "REST, an OpenAI-compatible tool schema, and an MCP server — the same shapes, so you wire it up once.",
     tag: "REST · tools · MCP",
+    viz: (
+      <>
+        <div className="viz-chips">
+          <span className="viz-chip on">REST</span>
+          <span className="viz-chip on">tools</span>
+          <span className="viz-chip on">MCP</span>
+        </div>
+        <div className="viz-line"><span>one payload shape</span><span className="viz-val">same handlers</span></div>
+      </>
+    ),
   },
+];
+
+const SOURCES = [
+  "Reuters",
+  "Bloomberg",
+  "The Associated Press",
+  "Financial Times",
+  "CNBC",
+  "The Economist",
+  "BBC News",
+  "Nikkei Asia",
+  "Al Jazeera",
+  "TechCrunch",
+  "The Verge",
+  "South China Morning Post",
 ];
 
 const STEPS = [
@@ -210,6 +273,20 @@ export default function Home() {
           </Marquee>
         </section>
 
+        {/* COVERAGE */}
+        <section className="marquee-strip">
+          <div className="wrap">
+            <span className="marquee-strip-label">Coverage includes</span>
+          </div>
+          <Marquee speed={38} gap="2.75rem" pauseOnHover>
+            <div className="rail-items">
+              {SOURCES.map((source) => (
+                <span key={source} className="rail-item"><i />{source}</span>
+              ))}
+            </div>
+          </Marquee>
+        </section>
+
         {/* FEATURES */}
         <section className="scaffold" id="features">
           <div className="wrap">
@@ -222,12 +299,15 @@ export default function Home() {
               </p>
             </div>
             <div className="features">
-              {FEATURES.map(({ icon: Icon, title, desc, tag }) => (
-                <div key={title} className="feature">
-                  <span className="feature-icon"><Icon size={15} strokeWidth={1.75} /></span>
-                  <h3 className="feature-title">{title}</h3>
-                  <p className="feature-desc">{desc}</p>
-                  <span className="feature-tag">{tag}</span>
+              {FEATURES.map(({ icon: Icon, title, desc, tag, viz }) => (
+                <div key={title} className="feature viz-card">
+                  <div className="viz">{viz}</div>
+                  <div className="feature-body">
+                    <span className="feature-icon"><Icon size={15} strokeWidth={1.75} /></span>
+                    <h3 className="feature-title">{title}</h3>
+                    <p className="feature-desc">{desc}</p>
+                    <span className="feature-tag">{tag}</span>
+                  </div>
                 </div>
               ))}
             </div>
