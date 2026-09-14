@@ -277,6 +277,10 @@ the public catalog routes; a database is required for poll, delta, receipts and 
    layout and stylesheet.
 7. **Generated code** — `supabase/functions/_shared/` is generated from the canonical sources. CI
    fails on drift, so run `npm run sync:supabase` after editing anything it copies.
+8. **Deployment** — Supabase today, but not required. `apps/api` and `apps/worker` are ordinary
+   Node services and the Edge Functions are generated from them, so the same code runs on any
+   Node host. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the coupling audit and the
+   options.
 
 Deeper reading: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) ·
 [docs/SOLANA-PAYMENTS.md](docs/SOLANA-PAYMENTS.md)
@@ -294,6 +298,7 @@ Deeper reading: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) ·
 | [docs/limits](https://pleiades.news/docs/limits) | Caps, invariants, segmentation |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System design and data flow |
 | [docs/SOLANA-PAYMENTS.md](docs/SOLANA-PAYMENTS.md) | The deposit spec and the token plan |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | What Supabase provides, and what moving would cost |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Phased plan |
 | [AGENTS.md](AGENTS.md) | Integration guide written for coding agents |
 
