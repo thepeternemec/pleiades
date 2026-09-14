@@ -617,3 +617,76 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   Legibility pass.
+   The greys were mixed as flat hex (#333, #585858, #777) which read as
+   near-invisible inside the dark mock and code boxes, especially on the
+   10–11px mono labels. Re-express the scale as white with opacity, so it
+   composites correctly over the gradient background, and lift the floor.
+   ══════════════════════════════════════════════════════════════════ */
+:root {
+  --text-secondary: rgba(255, 255, 255, 0.86);
+  --text-tertiary: rgba(255, 255, 255, 0.74);
+  --text-muted: rgba(255, 255, 255, 0.62);
+  --text-ghost: rgba(255, 255, 255, 0.5);
+}
+
+/* Box interiors: small mono text needs more contrast than body copy, so the
+   labels and footers inside mock and code boxes sit a step above the token. */
+.mock-title,
+.code-bar {
+  color: rgba(255, 255, 255, 0.68);
+}
+.mock-live {
+  color: rgba(255, 255, 255, 0.58);
+}
+.mock-row .k {
+  color: rgba(255, 255, 255, 0.6);
+}
+.mock-row .v {
+  color: rgba(255, 255, 255, 0.9);
+}
+.mock-row .s {
+  color: rgba(255, 255, 255, 0.64);
+}
+.mock-foot {
+  color: rgba(255, 255, 255, 0.56);
+}
+.code pre {
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* Card widgets */
+.viz-line {
+  color: rgba(255, 255, 255, 0.72);
+}
+.viz-key {
+  color: rgba(255, 255, 255, 0.92);
+}
+.viz-val,
+.viz-chip {
+  color: rgba(255, 255, 255, 0.64);
+}
+.viz-dots i {
+  background: #262626;
+}
+
+/* Small mono lines and card tags */
+.hero-tiny,
+.cta-tiny {
+  color: rgba(255, 255, 255, 0.56);
+}
+.feature-tag {
+  color: rgba(255, 255, 255, 0.58);
+}
+.pillar-kicker,
+.nav-logo small {
+  color: rgba(255, 255, 255, 0.56);
+}
+.sec-eyebrow {
+  color: rgba(255, 255, 255, 0.62);
+}
+.metric-label {
+  color: rgba(255, 255, 255, 0.68);
+}
