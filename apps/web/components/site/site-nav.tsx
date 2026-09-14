@@ -5,9 +5,9 @@
  */
 const LINKS = [
   { href: "/payment", label: "Payment" },
-  { href: "/pricing", label: "Pricing" },
   { href: "/docs", label: "Docs" },
   { href: "/faq", label: "FAQ" },
+  { href: "/pricing", label: "Pricing" },
 ];
 
 export default function SiteNav({ active }: { active?: string }) {
