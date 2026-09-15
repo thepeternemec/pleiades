@@ -33,7 +33,9 @@ export default function ScrollReveal() {
 
     // ── Aurora drift + fade: transform/opacity only, rAF-throttled ──
     const aurora = document.querySelector<HTMLElement>(".aurora-layer");
+    const root = document.documentElement;
     let raf = 0;
+    let scrollIdle = 0;
     const onScroll = () => {
       if (raf) return;
       raf = requestAnimationFrame(() => {
@@ -43,6 +45,12 @@ export default function ScrollReveal() {
         // Drift the layer up slowly, and hand the deep page back to black.
         aurora.style.setProperty("--aurora-shift", `${Math.min(y * 0.12, 240)}px`);
         aurora.style.setProperty("--aurora-fade", Math.max(0.22, 1 - y / 1900).toFixed(3));
+
+        // Pause the decorative CSS animations while the page is moving, then
+        // resume once it settles. One class toggle per gesture, not per frame.
+        root.classList.add("is-scrolling");
+        if (scrollIdle) window.clearTimeout(scrollIdle);
+        scrollIdle = window.setTimeout(() => root.classList.remove("is-scrolling"), 170);
       });
     };
     const parallaxOn = Boolean(aurora) && !reduceMotion;
@@ -52,7 +60,9 @@ export default function ScrollReveal() {
     }
     const stopParallax = () => {
       window.removeEventListener("scroll", onScroll);
+      root.classList.remove("is-scrolling");
       if (raf) cancelAnimationFrame(raf);
+      if (scrollIdle) window.clearTimeout(scrollIdle);
     };
 
     if (reduceMotion) return stopParallax;

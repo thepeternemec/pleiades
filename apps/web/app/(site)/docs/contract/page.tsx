@@ -194,7 +194,7 @@ export default function DocsContract() {
               <code>insufficient_balance</code>
             </td>
             <td>402</td>
-            <td>Top up, or pay for this call over x402.</td>
+            <td>Top up, or settle this single call.</td>
           </tr>
           <tr>
             <td>

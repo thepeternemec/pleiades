@@ -78,7 +78,7 @@ export default function DocsData() {
 
       <div className="docs-nav-foot">
         <a href="/docs/contract">← The contract</a>
-        <a href="/docs/payment">Payment on Solana →</a>
+        <a href="/docs/billing">Billing and metering →</a>
       </div>
     </>
   );

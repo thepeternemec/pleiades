@@ -1,5 +1,9 @@
 # Pleiades v2 API Contract — Proposal
 
+> **Historical planning note.** This document records the original plan. For the current
+> product positioning see the [README](../README.md), and for what is actually shipped see the
+> status table in [pleiades.news/docs](https://pleiades.news/docs).
+
 Proposed endpoint and schema extensions for the phases in [ROADMAP.md](ROADMAP.md). This is a design proposal to review against the v0.1 implementation; nothing here is deployed. All additions are backward-compatible: v0.1 clients keep working unchanged.
 
 ---
@@ -148,7 +152,7 @@ Cost rule: enrichment is computed once per pack; consumers never pay a per-user 
 
 ---
 
-## 8. x402 flow (Phase 4)
+## 8. Per-call payment flow (Phase 4)
 
 Replaces the `402 insufficient_balance` dead-end for uncredited agents:
 

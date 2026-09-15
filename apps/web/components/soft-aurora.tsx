@@ -196,6 +196,12 @@ export interface SoftAuroraProps {
   enableMouseInteraction?: boolean;
   mouseInfluence?: number;
   lightMode?: boolean;
+  /**
+   * Fraction of CSS pixels to actually shade. The aurora is a soft blur, so
+   * halving the buffer is invisible and cuts the per-pixel shader cost by four.
+   * The canvas is still displayed at full size by CSS.
+   */
+  resolutionScale?: number;
 }
 
 export default function SoftAurora({
@@ -215,6 +221,7 @@ export default function SoftAurora({
   enableMouseInteraction = false,
   mouseInfluence = 0.25,
   lightMode = false,
+  resolutionScale = 0.5,
 }: SoftAuroraProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -271,9 +278,15 @@ export default function SoftAurora({
         const w = container?.offsetWidth ?? 0;
         const h = container?.offsetHeight ?? 0;
         if (!w || !h) return;
-        renderer.setSize(w, h);
+        const bw = Math.max(1, Math.round(w * resolutionScale));
+        const bh = Math.max(1, Math.round(h * resolutionScale));
+        renderer.setSize(bw, bh);
+        // ogl pins the canvas style to the buffer size, so put it back to 100%
+        // and let CSS upscale the smaller buffer.
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
         if (program) {
-          program.uniforms.uResolution.value = [w, h, w / h];
+          program.uniforms.uResolution.value = [bw, bh, w / h];
         }
       }
 
@@ -338,6 +351,23 @@ export default function SoftAurora({
         else start();
       }
 
+      // The aurora's own motion is masked by the scroll, so pause the shader
+      // while the page is actually moving and resume shortly after it stops.
+      // This is the single biggest scroll-performance win on the page.
+      let idleTimer = 0;
+      let scrolling = false;
+      function onScroll() {
+        if (!scrolling) {
+          scrolling = true;
+          stop();
+        }
+        if (idleTimer) clearTimeout(idleTimer);
+        idleTimer = window.setTimeout(() => {
+          scrolling = false;
+          if (!document.hidden) start();
+        }, 170);
+      }
+
       if (reduceMotion) {
         render(0);
       } else {
@@ -349,6 +379,7 @@ export default function SoftAurora({
       observer?.observe(container);
       window.addEventListener("resize", resize);
       document.addEventListener("visibilitychange", onVisibility);
+      if (!reduceMotion) window.addEventListener("scroll", onScroll, { passive: true });
       if (enableMouseInteraction) {
         canvas.addEventListener("mousemove", handleMouseMove);
         canvas.addEventListener("mouseleave", handleMouseLeave);
@@ -359,6 +390,8 @@ export default function SoftAurora({
         observer?.disconnect();
         window.removeEventListener("resize", resize);
         document.removeEventListener("visibilitychange", onVisibility);
+        window.removeEventListener("scroll", onScroll);
+        if (idleTimer) clearTimeout(idleTimer);
         if (enableMouseInteraction) {
           canvas.removeEventListener("mousemove", handleMouseMove);
           canvas.removeEventListener("mouseleave", handleMouseLeave);
@@ -388,6 +421,7 @@ export default function SoftAurora({
     enableMouseInteraction,
     mouseInfluence,
     lightMode,
+    resolutionScale,
   ]);
 
   return <div ref={containerRef} className="soft-aurora" aria-hidden="true" />;

@@ -215,53 +215,6 @@
   opacity: 1;
 }
 
-/* ── Gradual Blur (content dissolves under the top edge) ──────────── */
-.gradual-blur {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 132px;
-  z-index: 40;
-  overflow: hidden;
-  pointer-events: none;
-}
-.gradual-blur span {
-  position: absolute;
-  inset: 0;
-  display: block;
-}
-.gradual-blur span:nth-child(1) {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 22%);
-  mask-image: linear-gradient(to bottom, #000 0%, transparent 22%);
-}
-.gradual-blur span:nth-child(2) {
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 42%);
-  mask-image: linear-gradient(to bottom, #000 0%, transparent 42%);
-}
-.gradual-blur span:nth-child(3) {
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 62%);
-  mask-image: linear-gradient(to bottom, #000 0%, transparent 62%);
-}
-.gradual-blur span:nth-child(4) {
-  backdrop-filter: blur(1.5px);
-  -webkit-backdrop-filter: blur(1.5px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 82%);
-  mask-image: linear-gradient(to bottom, #000 0%, transparent 82%);
-}
-.gradual-blur span:nth-child(5) {
-  backdrop-filter: blur(0.6px);
-  -webkit-backdrop-filter: blur(0.6px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
-}
-
 /* ── Noise (film grain) ───────────────────────────────────────────── */
 .noise-overlay {
   position: fixed;

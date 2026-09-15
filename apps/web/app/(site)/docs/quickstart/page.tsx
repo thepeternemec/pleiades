@@ -97,20 +97,16 @@ export default function DocsQuickstart() {
       <h2>4. Pay for it</h2>
       <p>
         Calls are free while the meter is off. With it on, you either present a key and draw from a
-        balance, or pay per call over x402. A request with no credential gets a quote for that exact
-        call:
+        balance, or pay as you go. A request with no credential gets a quote for that exact call:
       </p>
       <div className="code">
-        <div className="code-bar">402 Payment Required</div>
+        <div className="code-bar">402 Payment Required · abridged</div>
         <pre>{`{
-  "x402Version": 2,
-  "accepts": [{
-    "scheme": "exact",
-    "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-    "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    "max_amount_required": "4000",
-    "resource": "POST /v1/poll"
-  }]
+  "resource": "POST /v1/poll",
+  "amount_micros": 4000,
+  "currency": "USD",
+  "accepts": ["pay-per-call", "prepaid"],
+  "pay_url": "<payment instruction>"
 }`}</pre>
       </div>
 
@@ -123,7 +119,7 @@ export default function DocsQuickstart() {
           <a href="/docs/data">Beats and clusters</a> — how the catalog is organised.
         </li>
         <li>
-          <a href="/docs/payment">Payment on Solana</a> — x402, deposits and receipts.
+          <a href="/docs/billing">Billing and metering</a> — charges, top-ups and receipts.
         </li>
         <li>
           <a href="/docs/limits">Limits and invariants</a> — the caps you will hit, and the promises.

@@ -1,5 +1,9 @@
 # Pleiades — Vision
 
+> **Historical planning note.** This document records the original plan. For the current
+> product positioning see the [README](../README.md), and for what is actually shipped see the
+> status table in [pleiades.news/docs](https://pleiades.news/docs).
+
 **The real-time news terminal.** An AI-powered platform that delivers breaking insights to traders, content creators, AI agents, and media professionals — before stories reach the mainstream.
 
 Pleiades combines real-time news discovery with intelligent curation at scale. It functions like an agentic system, scanning thousands of sources 24/7 and continuously expanding its data inputs and topical coverage. By filtering through vast volumes of information, it extracts actionable signals and delivers actionable intelligence.
@@ -15,7 +19,7 @@ Built for integration into human and autonomous workflows alike, Pleiades offers
 - **Telegram & Discord bots** — human-in-the-loop alerts and subscriptions
 - **MCP** — drop-in tool server for agent frameworks
 - **Virtuals ACP** — agent-native commerce: accounts, jobs, and memos on-chain
-- **Coinbase x402** — HTTP 402 payment facilitation in USDC on Base
+- **Payment rails** — HTTP 402 per-call billing, with card, invoice and an optional stablecoin rail
 
 ## Signal, not noise
 

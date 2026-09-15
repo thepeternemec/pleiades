@@ -1,12 +1,11 @@
-# Solana payments — deposit, metering and token plan
+# The stablecoin rail
 
-Status: **partly built**. The metering core (identity, balance, receipts, caps) and
-deposit intents are implemented and verified against the live database. The on-chain
-half — the deposit watcher and x402 settlement — needs a treasury address and an RPC
-provider before it can run, and is gated behind `PLEIADES_METERING`.
+Status: **built, not switched on.** One optional way to fund a balance, alongside card and
+invoice. It is documented in full because it is the most involved rail to get right, not because
+it is the product.
 
-Scope: how a customer funds a Pleiades account with stablecoins on Solana, how calls
-are metered against that balance, and how a Pleiades SPL token would be accepted.
+This is a payment rail, not a positioning statement: Pleiades is a news layer for agents, and how
+a customer funds their balance is an implementation detail of the metered ledger.
 
 ---
 

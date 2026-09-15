@@ -16,7 +16,7 @@ If you ship a capability, update every place that describes it **in the same pul
 - `README.md` — the **Endpoints** and **What You Get** tables
 - `apps/web/app/(site)/docs/page.tsx` — the **What is live today** table
 - `apps/web/app/(site)/page.tsx` — any teaser or claim that changes
-- `docs/SOLANA-PAYMENTS.md` — the status table, if it is payment work
+- `docs/BILLING-RAIL.md` — the status table, if it is payment work
 
 A PR that makes a claim true is welcome. A PR that leaves a stale claim behind will be asked to
 fix it before merge.
@@ -81,9 +81,9 @@ npm run build -w @pleiades/contracts  # then:
 node --test packages/contracts/dist/*.test.js
 ```
 
-The payment and verification logic is deliberately pure so it can be tested without a database or
-a chain: `buildSolanaPayUrl`, `verifyDepositTransfer`, base58 round-trips, amount conversion and
-the credit maths all have direct unit tests. Please keep it that way — a rule that only exists
+The billing logic is deliberately pure so it can be tested without a database or a payment
+provider: the payment-request builder, the deposit verification rules, base58 round-trips, amount
+conversion and the credit maths all have direct unit tests. Please keep it that way — a rule that only exists
 inside a Postgres function cannot be tested here, so anything that *can* be pure, should be.
 
 ## Adding a beat

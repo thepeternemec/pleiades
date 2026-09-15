@@ -15,7 +15,7 @@ const GROUPS: Array<{ title: string; links: Array<{ href: string; label: string 
     links: [
       { href: "/docs/contract", label: "The contract" },
       { href: "/docs/data", label: "Beats and clusters" },
-      { href: "/docs/payment", label: "Payment on Solana" },
+      { href: "/docs/billing", label: "Billing and metering" },
     ],
   },
   {

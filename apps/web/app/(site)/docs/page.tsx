@@ -49,12 +49,12 @@ export default function DocsOverview() {
         <tbody>
           <tr>
             <td>
-              <strong>x402</strong>
+              <strong>Pay as you go</strong>
             </td>
-            <td>An agent with its own wallet and no account</td>
+            <td>Evaluation, and agents that call occasionally</td>
             <td>
-              The call returns <code>402</code> with a USDC quote. The agent pays on Solana and
-              retries the identical request.
+              Each call is billed to the account that made it. A call with no credential returns{" "}
+              <code>402</code> with a quote for that call.
             </td>
           </tr>
           <tr>
@@ -63,15 +63,14 @@ export default function DocsOverview() {
             </td>
             <td>A desk that polls the same beats every hour</td>
             <td>
-              Deposit USDC, USDT or SOL once. Calls draw micros from the balance with no signature
-              and no fee per call.
+              Top up once and calls draw down from the balance, with no per-call payment step.
             </td>
           </tr>
         </tbody>
       </table>
       <p>
         The full mechanics, including the challenge shape and the deposit flow, are in{" "}
-        <a href="/docs/payment">Payment on Solana</a>.
+        <a href="/docs/billing">Billing and metering</a>.
       </p>
 
       <h2>What is live today</h2>
@@ -102,7 +101,7 @@ export default function DocsOverview() {
             <td>Built; off by default</td>
           </tr>
           <tr>
-            <td>Deposits, x402 settlement, MCP server</td>
+            <td>Self-serve billing, MCP server</td>
             <td>Interface published, backend not yet wired</td>
           </tr>
           <tr>
@@ -127,7 +126,7 @@ export default function DocsOverview() {
           <a href="/docs/contract">The contract</a> — verbs, pack shape and cursors.
         </li>
         <li>
-          <a href="/docs/payment">Payment on Solana</a> — x402, deposits and receipts.
+          <a href="/docs/billing">Billing and metering</a> — how charges, top-ups and receipts work.
         </li>
       </ul>
 

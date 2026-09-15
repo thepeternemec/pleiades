@@ -19,7 +19,7 @@ and what moving would actually cost.
 | **PostgREST** | The `supabase-js` query builder talks to it | ⚠️ See §4 |
 | **Realtime** | `packs` inserts → `@pleiades/realtime` → WebSocket to clients | ⚠️ Replaceable |
 | **pg_cron + pg_net** | Fires the ingestion worker on a schedule | ✅ Any scheduler |
-| **Vault** | Stores the news worker token | ✅ Env var |
+| **Vault** | Stores the worker token | ✅ Env var |
 | **RLS + roles** | Grants to `anon` / `authenticated` / `service_role` | ⚠️ Supabase-only roles |
 | **Auth** | *Not used.* Identity is the custom `agents` / `api_keys` tables | ✅ Already independent |
 
@@ -133,6 +133,6 @@ Neither has bitten yet.
 
 - The public API contract — same routes, same shapes
 - The site and the docs, which never mention the host
-- The payment rail: Solana is a chain, not a platform, and the deposits, receipts and x402
-  challenge are unaffected by where the API runs
+- Billing: the metered ledger and the receipts are unaffected by where the API runs, and so is
+  the optional stablecoin rail
 - The price card and the caps

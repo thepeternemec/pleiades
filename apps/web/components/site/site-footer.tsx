@@ -18,7 +18,7 @@ export default function SiteFooter() {
         </div>
         <div className="footer-row" style={{ marginTop: 10 }}>
           <span className="footer-address">
-            the real-time news API for AI agents · paid per call in USDC on Solana
+            the news layer for AI agents · usage-based pricing, no seat licence
           </span>
         </div>
       </div>

@@ -30,7 +30,7 @@ System design for the Real-Time News Terminal. Phase tags refer to [ROADMAP.md](
  │  /v1/catalog /tools      │        │  · WS push via Supabase Realtime (Phase 2) │
  │  /v1/poll /delta (meter) │        │  · webhooks → customer CMS (Phase 2)       │
  │  /v1/pricing /openapi    │        │  · Telegram / Discord bots (Phase 3)       │
- │  x402 rails (Phase 4)    │        │  · MCP server (Phase 4)                    │
+ │  Payment rails           │        │  · MCP server (Phase 4)                    │
  └──────────┬───────────────┘        │  · Virtuals ACP jobs & memos (Phase 4)     │
             │                        └───────────────────────────────────────────┘
             ▼
@@ -42,7 +42,7 @@ System design for the Real-Time News Terminal. Phase tags refer to [ROADMAP.md](
 1. **One provider query serves all subscribers of a beat.** Packs are materialized per beat, never per user request. Provider cost is `O(beats × refresh_rate)`, not `O(users)`. This is the economic foundation of the whole product.
 2. **One item format everywhere.** `@pleiades/contracts` defines the item/pack schema; REST, WS, webhooks, bots, ACP memos, and briefings all reuse it. No surface invents its own shape.
 3. **Bounded tokens, amortized intelligence.** All enrichment (summaries, importance, signals, narratives) is computed once at pack time. Consumers never pay a per-user LLM cost.
-4. **Rail-agnostic billing.** Receipts carry a `rail` field; prepaid `X-PAYMENT` credentials, x402 USDC, and Stripe are interchangeable rails on the same ledger.
+4. **Rail-agnostic billing.** Receipts carry a `rail` field; prepaid credentials, x402 USDC, and Stripe are interchangeable rails on the same ledger.
 5. **Pull is the reference protocol; push is an accelerator.** WS events and webhooks are delta pages with the same cursor/receipt semantics as REST poll/delta.
 
 ## 3. Components
@@ -79,7 +79,7 @@ beat (catalog) ─ refresh_interval_minutes ─▶ scheduler
 
 - `ledgers` — per-principal prepaid balance (micros, integer strings on the wire).
 - `receipts` — immutable: `receipt_id, agent_id, call, beat_id, amount_micros, rail, settled_at`.
-- Rails today: `manual` (legacy v0.1) · `prepaid` · later `x402`, `acp`, `stripe`.
+- Rails today: `manual` (legacy v0.1) · `prepaid` · later stablecoin, `acp`, `stripe`.
 - Metered calls require an idempotency key (Phase 0 fix F2): repeat of a settled key replays the original response and receipt, never re-debits.
 
 ## 6. Deployment — Supabase-first (decided)
@@ -102,7 +102,7 @@ beat (catalog) ─ refresh_interval_minutes ─▶ scheduler
 | 1 | live ingestion: worker + Supabase → real packs behind poll/delta |
 | 2 | WebSocket + signed webhooks |
 | 3 | Telegram + Discord bots |
-| 4 | MCP server, x402 rail, Virtuals ACP jobs/memos |
+| 4 | MCP server, self-serve payment rails, Virtuals ACP jobs/memos |
 | 5 | intelligence layer: triage, summaries, signals, narratives, briefings, self-service beats |
 | 6 | scale: multi-tenancy, self-service billing, catalog expansion, compliance |
 

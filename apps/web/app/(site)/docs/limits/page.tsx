@@ -76,7 +76,7 @@ export default function DocsLimits() {
 }`}</pre>
       </div>
       <p>
-        An exhausted balance is different from a cap: it returns <code>402</code> with an x402 quote,
+        An exhausted balance is different from a cap: it returns <code>402</code> with a quote,
         because one more call is still purchasable.
       </p>
 
@@ -105,8 +105,8 @@ export default function DocsLimits() {
           <tr>
             <td>Two rails, one balance</td>
             <td>
-              x402 buys a single call from a wallet; a funded balance skips the chain per call. Both
-              land in the same ledger.
+              Pay as you go bills each call on its own; a funded balance is drawn down instead.
+              Both land in the same ledger.
             </td>
           </tr>
           <tr>
@@ -205,7 +205,7 @@ export default function DocsLimits() {
       </p>
 
       <div className="docs-nav-foot">
-        <a href="/docs/payment">← Payment on Solana</a>
+        <a href="/docs/billing">← Billing and metering</a>
         <a href="/faq">FAQ →</a>
       </div>
     </>

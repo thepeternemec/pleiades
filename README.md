@@ -1,9 +1,9 @@
 ---
 name: Pleiades
 type: api
-category: news
-auth: optional (x402 or prepaid key)
-pricing: metered per call
+category: real-time context for AI agents
+auth: optional (usage-based, operator-granted in early access)
+pricing: usage-based, per answer
 beats: 20
 publishers: 150000+
 languages: eng
@@ -11,7 +11,7 @@ live: https://pleiades.news
 api: https://dnnoypytdfvsdenykooq.supabase.co/functions/v1/api
 openapi: https://dnnoypytdfvsdenykooq.supabase.co/functions/v1/api/openapi.json
 mcp: https://pleiades.news/mcp (interface published, not served yet)
-payments: metered per answer; x402 or a prepaid USDC balance settled on Solana
+payments: metered per answer; card, invoice or stablecoin
 license: MIT
 ---
 
@@ -25,9 +25,8 @@ license: MIT
 </p>
 
 <p align="center">
-  <a href="https://pleiades.news"><img src="https://img.shields.io/badge/live-pleiades.news-9945FF?style=flat-square" alt="Live"></a>
-  <img src="https://img.shields.io/badge/Solana-x402-14F195?style=flat-square" alt="Solana x402">
-  <a href="https://pleiades.news/docs"><img src="https://img.shields.io/badge/docs-reference-03E1FF?style=flat-square" alt="Docs"></a>
+  <a href="https://pleiades.news"><img src="https://img.shields.io/badge/live-pleiades.news-ededed?style=flat-square" alt="Live"></a>
+  <a href="https://pleiades.news/docs"><img src="https://img.shields.io/badge/docs-reference-9c9c9c?style=flat-square" alt="Docs"></a>
   <a href="https://pleiades.news/llms.txt"><img src="https://img.shields.io/badge/llms.txt-agent%20ready-5B4EFF?style=flat-square" alt="llms.txt"></a>
 </p>
 
@@ -35,24 +34,20 @@ license: MIT
   <a href="#-quick-start">Quick Start</a> •
   <a href="#-what-you-get">What You Get</a> •
   <a href="#-endpoints">Endpoints</a> •
-  <a href="#-payment-on-solana">Payment</a> •
+  <a href="#-billing">Billing</a> •
   <a href="#-self-hosting">Self-Host</a> •
   <a href="https://pleiades.news/docs">Docs</a>
 </p>
 
-**The news layer for AI agents.** Your agent asks one question on a schedule — *has this moved?* —
-and pays a fraction of a cent for the answer. Any model, any framework, any runtime.
-
-Payment is settled on Solana, because it is the only rail where a four-tenths-of-a-cent answer is
-economical and an agent can pay without a human. That is a detail of the billing model, not a
-qualification on who can use it.
+**The news layer for AI agents.** Your agent asks one question on a schedule — *has this
+moved?* — and gets either "nothing new" or a short, cited pack. Usage-based, priced per answer.
 
 Live at **[pleiades.news](https://pleiades.news)** · API at
 `https://dnnoypytdfvsdenykooq.supabase.co/functions/v1/api`
 
 **For AI agents:** [`llms.txt`](apps/web/public/llms.txt) · [`skill.md`](apps/web/public/skill.md) ·
 [OpenAPI](https://dnnoypytdfvsdenykooq.supabase.co/functions/v1/api/openapi.json) ·
-[`AGENTS.md`](AGENTS.md) · MCP: `https://pleiades.news/mcp`
+[`AGENTS.md`](AGENTS.md)
 
 > ⭐ If this is useful, star the repo. It helps other builders find it.
 
@@ -60,7 +55,8 @@ Live at **[pleiades.news](https://pleiades.news)** · API at
 
 ## ⚡ Quick Start
 
-No key needed to look around. The catalog, the tool schema, pricing and stats are all public.
+No credential needed to look around. The catalog, the tool schema, pricing and stats are all
+public.
 
 ```bash
 API=https://dnnoypytdfvsdenykooq.supabase.co/functions/v1/api
@@ -123,14 +119,13 @@ Store the `cursor`, send it next time, and you will only ever see articles you h
 
 | Capability | Details |
 | --- | --- |
-| **Beats** | 20 seeded topics across markets, policy, energy, science and geopolitics. English only. [Catalog](https://pleiades.news/docs/data) |
-| **Article clusters** | One cluster per beat: deduplicated by URL, ordered by publication time, no hidden story-merging. |
+| **Topics (beats)** | 20 seeded topics across markets, policy, energy, science and geopolitics. English only. [Catalog](https://pleiades.news/docs/data) |
+| **Article clusters** | One cluster per topic: deduplicated by URL, ordered by publication time, no hidden story-merging. |
 | **Bounded packs** | At most 8 items, 320-character ledes, ≤800 token estimate. No article bodies at any price. |
-| **Payment** | x402 per call on Solana, or a prepaid balance funded with USDC, USDT or SOL. [Docs](https://pleiades.news/docs/payment) |
-| **Receipts** | Every metered call and every deposit writes a receipt reconcilable in USD micros. |
-| **Caps** | $0.50/day and 50 distinct beats/day per identity, enforced in the database before the debit. |
+| **Stateful cursors** | An opaque, signed, beat-bound cursor, so a poll only ever returns what is new. |
+| **Lead-time evidence** | Every item carries `first_indexed_at` beside `published_at`, so the claim is measurable rather than asserted. |
+| **Metered billing** | Priced per answer, with receipts you can reconcile and caps that stop a runaway loop. [Docs](https://pleiades.news/docs/billing) |
 | **Agent surfaces** | REST, an OpenAI-compatible tool schema, and an MCP server interface. [`llms.txt`](apps/web/public/llms.txt) |
-| **Lead-time evidence** | Every item carries `first_indexed_at` beside `published_at`, so the claim is measurable. |
 
 ### How it compares
 
@@ -138,8 +133,8 @@ Store the `cursor`, send it next time, and you will only ever see articles you h
 | --- | --- | --- | --- |
 | **Who asks** | A human, repeatedly | A human, once | A machine, on a schedule |
 | **What you get** | Everything, to read | Ranked results | *Nothing moved*, or ≤8 cited stories |
-| **What wins** | Volume | Recall and ranking | State and a cursor |
-| **Unit of billing** | Free, or a seat | Per query | Per wake-up |
+| **State** | None | None | A cursor per topic |
+| **Unit of billing** | Free, or a seat | Per query | Per answer |
 | **Cost when nothing happens** | Your attention | A full query | $0.0005 |
 
 ---
@@ -154,64 +149,58 @@ Base: `https://dnnoypytdfvsdenykooq.supabase.co/functions/v1/api`
 | Stats | `GET /v1/stats` | Live |
 | Tools | `GET /v1/tools` | Live |
 | Pricing | `GET /v1/pricing` | Live |
-| Tokens accepted | `GET /v1/tokens` | Live (reports `settlement: unavailable` until a treasury is set) |
 | Poll | `POST /v1/poll` | Live |
 | Delta | `POST /v1/delta` | Live |
+| Webhooks | `POST`, `GET`, `DELETE /v1/webhooks` | Live |
 | Balance | `GET /v1/balance` | Built; needs a credential |
 | Receipts | `GET /v1/receipts?since=` | Built; needs a credential |
-| Deposits | `POST`, `GET /v1/deposits` | Built; needs a treasury address |
-| Webhooks | `POST`, `GET`, `DELETE /v1/webhooks` | Live |
+| Top-ups | `POST`, `GET /v1/deposits` | Built; needs a receiving account |
 | Resolve | `POST /v1/resolve` | Not built |
 | Brief | `POST /v1/brief` | Not built |
 | Watch | `POST /v1/watch` | Not built |
 | MCP | `/mcp` | Interface published, not served |
-| News v2 | `GET /v2/topics`, `/v2/news`, `/v2/changes` | Separate protected service |
 
 Full reference: **[pleiades.news/docs](https://pleiades.news/docs)** ·
 [OpenAPI](https://dnnoypytdfvsdenykooq.supabase.co/functions/v1/api/openapi.json)
 
 ---
 
-## 💸 Payment on Solana
+## 💸 Billing
 
-Two rails, one balance.
+Usage-based, per answer. There is no seat, no platform fee and no monthly minimum.
 
-**x402 — no account.** Call a metered route with no credential and you get a quote for that exact
-call:
+| Call | What it returns | Price |
+| --- | --- | --- |
+| `POST /v1/poll` — nothing new | An empty answer | $0.0005 |
+| `POST /v1/poll` — moved | A bounded, cited pack | $0.004 |
+| `POST /v1/delta` | Everything newer than your cursor | $0.004 warm · $0.02 cold |
+| `POST /v1/brief` | 3–6 cited sentences plus the pack | $0.03 |
+
+Two ways to pay, both in one balance:
+
+- **Pay as you go** — each call is billed to the account that made it. A call with no credential
+  returns `402` with a quote for that call.
+- **Prepaid** — top up once and calls draw down from the balance with no per-call payment step.
 
 ```json
+// POST /v1/deposits  ->  201 Created
 {
-  "x402Version": 2,
-  "accepts": [{
-    "scheme": "exact",
-    "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-    "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    "max_amount_required": "4000",
-    "resource": "POST /v1/poll"
-  }]
+  "deposit_id": "dep_01JQ8ZK4M2X",
+  "amount_micros": 5000000,
+  "currency": "USD",
+  "pay_url": "<payment instruction>",
+  "expires_at": "2026-09-12T12:30:00Z"
 }
 ```
 
-Sign the USDC transfer, then retry the identical request with `X-PAYMENT`.
+Card, invoice and stablecoin are all accepted; credits are held in integer USD micros and never
+expire. Caps are checked before the debit — $0.50 a day and 50 distinct topics a day per identity
+by default — because a looping tool call is the default failure mode of an agent.
 
-**Prepaid — no per-call chain write.** `POST /v1/deposits` returns a Solana Pay URL and a unique
-reference key. The wallet attaches that key to the transfer, and because Solana validators index
-transactions by account key, `getSignaturesForAddress(reference)` reconciles the deposit exactly.
+Billing is **off by default**. Set `PLEIADES_METERING=on` to charge. While it is off, calls are
+free and no receipt is written.
 
-```
-solana:<treasury>?amount=5&spl-token=EPjF…&reference=7Yq3…&label=Pleiades&message=API%20credits
-```
-
-A deposit is credited only after six checks — reference, recipient, mint, amount, unused
-signature, and at least `confirmed` commitment. The signature is the primary key of the `deposits`
-table, which is the duplicate-credit guard: the same transaction can be presented twice before it
-confirms.
-
-Full details: [docs/SOLANA-PAYMENTS.md](docs/SOLANA-PAYMENTS.md) ·
-[pleiades.news/docs/payment](https://pleiades.news/docs/payment)
-
-> **Metering is off by default.** Set `PLEIADES_METERING=on` to charge. While it is off, calls are
-> free and no receipt is written.
+Full details: [docs/BILLING.md](docs/BILLING.md) · [pleiades.news/docs/billing](https://pleiades.news/docs/billing)
 
 ---
 
@@ -246,44 +235,36 @@ npm run dev        # API on http://localhost:8787
 npm run dev:web    # site on http://localhost:3000
 ```
 
-The runtime is Supabase (Postgres, Edge Functions, Realtime). Local stack and deploy commands:
+The runtime is Postgres plus a Node service (deployed on Supabase today, but not tied to it — see
+[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)). Nothing is required for the public catalog routes; a
+database is required for poll, delta, receipts and top-ups.
 
-```bash
-supabase link --project-ref <ref>
-supabase db push
-supabase secrets set NEWSAPI_API_KEY=<key>
-supabase functions deploy api --no-verify-jwt
-```
-
-Environment variables are documented in [`.env.example`](.env.example). Nothing is required for
-the public catalog routes; a database is required for poll, delta, receipts and deposits.
+Environment variables are documented in [`.env.example`](.env.example).
 
 ---
 
 ## 🏗️ Architecture
 
-1. **Contracts** (`packages/contracts`) — every wire shape as a zod schema: beats, packs, payments,
-   receipts, errors. Single source of truth for REST, WebSocket, bots and MCP.
+1. **Contracts** (`packages/contracts`) — every wire shape as a zod schema: beats, packs, receipts,
+   errors. Single source of truth for REST, WebSocket, bots and MCP.
 2. **Database** (`packages/db`) — typed access plus the ledger. `charge_call()` does caps, the
    debit, the receipt and the usage counters in one transaction, so a refused charge cannot
    half-apply.
-3. **API** (`apps/api`) — a Hono app. Node dev mirror; the deployed runtime is a Supabase Edge
-   Function generated from it by `scripts/sync-supabase.mjs`.
-4. **Worker** (`apps/worker`) — ingestion: newsapi.ai queries → English filter → URL dedupe →
+3. **API** (`apps/api`) — a Hono app. Node dev mirror; the deployed runtime is an Edge Function
+   generated from it by `scripts/sync-supabase.mjs`.
+4. **Worker** (`apps/worker`) — ingestion: provider queries → English filter → URL dedupe →
    bounded pack → persistence.
-5. **Payments** — Solana. x402 challenges on uncredentialed calls, deposit intents reconciled by
-   reference key, credits written once per transaction signature.
+5. **Billing** — a metered ledger with receipts. Payment rails are pluggable; card, invoice and
+   stablecoin all credit the same balance, and a transaction signature or payment id is the
+   duplicate-credit guard.
 6. **Web** (`apps/web`) — the site. Two Next route groups so each design system owns its own root
    layout and stylesheet.
 7. **Generated code** — `supabase/functions/_shared/` is generated from the canonical sources. CI
    fails on drift, so run `npm run sync:supabase` after editing anything it copies.
-8. **Deployment** — Supabase today, but not required. `apps/api` and `apps/worker` are ordinary
-   Node services and the Edge Functions are generated from them, so the same code runs on any
-   Node host. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the coupling audit and the
-   options.
+8. **Deployment** — not tied to a host: `apps/api` and `apps/worker` are ordinary Node services.
 
 Deeper reading: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) ·
-[docs/SOLANA-PAYMENTS.md](docs/SOLANA-PAYMENTS.md)
+[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
 
 ---
 
@@ -292,13 +273,13 @@ Deeper reading: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) ·
 | Document | What it covers |
 | --- | --- |
 | [pleiades.news/docs](https://pleiades.news/docs) | The documentation site |
-| [docs/QUICKSTART](https://pleiades.news/docs/quickstart) | First call in two minutes |
-| [docs/contract](https://pleiades.news/docs/contract) | Verbs, pack shape, cursors, errors |
-| [docs/payment](https://pleiades.news/docs/payment) | x402, deposits, receipts, tokens |
-| [docs/limits](https://pleiades.news/docs/limits) | Caps, invariants, segmentation |
+| [Quickstart](https://pleiades.news/docs/quickstart) | First call in two minutes |
+| [The contract](https://pleiades.news/docs/contract) | Verbs, pack shape, cursors, errors |
+| [Billing and metering](https://pleiades.news/docs/billing) | Charges, top-ups, receipts, caps |
+| [Limits and invariants](https://pleiades.news/docs/limits) | Caps, invariants, segmentation |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System design and data flow |
-| [docs/SOLANA-PAYMENTS.md](docs/SOLANA-PAYMENTS.md) | The deposit spec and the token plan |
-| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | What Supabase provides, and what moving would cost |
+| [docs/BILLING.md](docs/BILLING.md) | The metered ledger and the stablecoin rail |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | What the host provides, and what leaving costs |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Phased plan |
 | [AGENTS.md](AGENTS.md) | Integration guide written for coding agents |
 
@@ -306,10 +287,10 @@ Deeper reading: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) ·
 
 ## 🤝 Contributing
 
-Bug reports, new beats, documentation fixes and payment-rail work are all welcome. See
+Bug reports, new topics, documentation fixes and billing work are all welcome. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow and the rules that keep this repo honest.
 
-- **Propose a beat:** open an issue with the topic, the concept URIs and why an agent would poll it.
+- **Propose a topic:** open an issue with the subject, the concept URIs and why an agent would poll it.
 - **Fix the docs:** every page under `apps/web/app/(site)/docs/` is plain JSX — no build step.
 - **Never let the site claim more than the code does.** If you ship a capability, update the
   status tables in the README and on the site in the same PR.

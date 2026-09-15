@@ -5,7 +5,7 @@ import DocsSide from "@/components/site/docs-side";
 export const metadata = {
   title: "Documentation",
   description:
-    "Integrate Pleiades: find a beat, poll the cursor, pay per call on Solana, and read the pack contract.",
+    "Integrate Pleiades: find a topic, poll the cursor, read a bounded cited pack, and understand the metered billing behind it.",
 };
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {

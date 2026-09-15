@@ -73,7 +73,7 @@ const FEATURES = [
       <>
         <div className="viz-line"><span className="viz-key">balance</span><span className="viz-val">$5.00 → $4.86</span></div>
         <div className="viz-bar"><i style={{ width: "97%" }} /></div>
-        <div className="viz-line"><span>funded once</span><span className="viz-val">USDC on Solana</span></div>
+        <div className="viz-line"><span>funded once</span><span className="viz-val">card or invoice</span></div>
       </>
     ),
   },
@@ -141,7 +141,7 @@ const STEPS = [
   {
     n: "3",
     title: "It pays for the answer",
-    desc: "Per call over x402 straight from the wallet, or drawn from a balance you funded once in USDC, USDT or SOL.",
+    desc: "Per call, or drawn down from a prepaid balance. No invoice, no seat, and no minimum spend.",
     tag: "no invoice, no seat",
   },
 ];
@@ -157,19 +157,19 @@ export default function Home() {
         <section className="hero" id="top">
           <div className="wrap">
             <span className="eyebrow">
-              <span className="eyebrow-tag">Agent-native</span>
+              <span className="eyebrow-tag">Early access</span>
               {stats?.beats ?? 20} topics live
               <span style={{ color: "var(--border-strong)" }}>·</span>
               150,000 publishers
               <span style={{ color: "var(--border-strong)" }}>·</span>
-              pay per answer
+              usage-based
             </span>
 
             <h1>The news layer for AI agents.</h1>
             <p className="lede">
-              Your agent asks one question on a schedule — has this moved? — and pays a fraction of
-              a cent for the answer. Point it at the topics that matter and it tells you the moment
-              something changes, whichever model or framework it runs on.
+              Agents act on what they already know, which is usually out of date. Pleiades watches
+              150,000 publishers and tells yours the moment something on its topics changes — a
+              short, cited brief instead of a feed to read.
             </p>
 
             <div className="hero-cta">
@@ -179,7 +179,7 @@ export default function Home() {
               <a className="btn-ghost" href="/docs">Read the docs</a>
             </div>
             <p className="hero-tiny">
-              pay per answer · settled in USDC on Solana · free while we are in early access
+              usage-based pricing · no seat licence · free while we are in early access
             </p>
 
             <div className="mock" style={{ marginTop: 46 }}>
@@ -239,7 +239,7 @@ export default function Home() {
                   )}
                 </div>
                 <div className="mock-foot">
-                  <span>paid in USDC</span>
+                  <span>metered per answer</span>
                   <span>per call</span>
                   <span style={{ marginLeft: "auto" }}>{stamp ? `updated ${stamp}` : "connecting…"}</span>
                 </div>
@@ -265,8 +265,8 @@ export default function Home() {
                 <div className="metric-label">Stories in an answer, so it fits any context window</div>
               </div>
               <div>
-                <div className="metric-num">1 call</div>
-                <div className="metric-label">All it takes to find out whether anything moved</div>
+                <div className="metric-num">90m</div>
+                <div className="metric-label">Freshness SLO, on a 60-minute refresh target</div>
               </div>
             </div>
             <p className="hero-tiny" style={{ marginTop: 34 }}>
@@ -325,8 +325,8 @@ export default function Home() {
               <span className="sec-eyebrow">The hyper-news agent</span>
               <h2 className="sec-title">An agent that buys its own news.</h2>
               <p className="sec-sub">
-                It wakes on a schedule, asks what moved, and pays for the answer from its own
-                Solana wallet. No account, no API key, no invoice, no human.
+                It wakes on a schedule, asks what moved, and pays for only the answers it uses.
+                No API key to rotate, no invoice to approve, no human in the loop.
               </p>
             </div>
 
@@ -340,7 +340,7 @@ export default function Home() {
                 </p>
                 <ul>
                   <li>Wake on a schedule — a minute on a market topic, hourly on the rest</li>
-                  <li>Pay per answer over x402, straight from the agent&rsquo;s wallet</li>
+                  <li>Pay per answer, billed to the account that owns it</li>
                   <li>Nothing moved is a real answer, and the cheapest one</li>
                   <li>Every call returns a receipt the operator can reconcile</li>
                 </ul>
@@ -349,7 +349,7 @@ export default function Home() {
                 <div className="mock-bar">
                   <span className="mock-dots"><span /><span /><span /></span>
                   <span className="mock-title">agent loop · one topic · one day</span>
-                  <span className="mock-live">x402</span>
+                  <span className="mock-live">metered</span>
                 </div>
                 <div className="mock-feed">
                   <div className="mock-row">
@@ -381,7 +381,7 @@ export default function Home() {
                 <div className="mock-foot">
                   <span>48 wakes a day</span>
                   <span>≈ $0.14</span>
-                  <span style={{ marginLeft: "auto" }}>paid from the agent&rsquo;s wallet</span>
+                  <span style={{ marginLeft: "auto" }}>paid per answer</span>
                 </div>
               </div>
             </div>
@@ -436,48 +436,89 @@ export default function Home() {
           </div>
         </section>
 
-        {/* SOLANA */}
-        <section className="scaffold" id="settlement">
+        {/* WHY NOW */}
+        <section className="scaffold" id="why-now">
           <div className="wrap">
             <div className="sec-head">
-              <span className="sec-eyebrow">Payment</span>
-              <h2 className="sec-title">Metered per answer. Settled on Solana.</h2>
+              <span className="sec-eyebrow">Why now</span>
+              <h2 className="sec-title">Agents are shipping faster than their context updates.</h2>
               <p className="sec-sub">
-                Agent-native payment is a design choice, not a billing detail. There is no invoice to
-                raise, no seat to license, and no human needed to approve a four-tenths-of-a-cent
-                answer.
+                A model&rsquo;s training data is months old the day it deploys. Retrieval answers a
+                question once and forgets it. Neither tells an agent what changed in the last hour,
+                which is the only thing a market actually reacts to.
               </p>
             </div>
-            <div className="showcase">
-              <div>
-                <h3>Two ways to pay, one balance.</h3>
-                <p>
-                  An agent with a wallet can pay per call and never sign up for anything. One that
-                  polls all day funds a balance once and then skips the chain entirely. Solana
-                  settles it, because it is the only rail where a sub-cent answer is economical.
+            <div className="features">
+              <div className="feature" style={{ minHeight: 220 }}>
+                <h3 className="feature-title">A cutoff date is not a strategy</h3>
+                <p className="feature-desc">
+                  Every deployed agent is already behind. The gap widens every day it runs, and no
+                  amount of prompt engineering closes it.
                 </p>
-                <ul>
-                  <li>x402 — one call, one payment, no account required</li>
-                  <li>Prepaid — deposit USDC, USDT or SOL and draw down per call</li>
-                  <li>Every call returns a receipt you can reconcile in USD</li>
-                  <li>Empty answers stay cheap, so polling often is the point</li>
-                </ul>
+                <span className="feature-tag">stale by default</span>
               </div>
-              <div className="code">
-                <div className="code-bar">402 Payment Required · Solana</div>
-                <pre>{`{
-  "x402Version": 2,
-  "accepts": [{
-    "scheme": "exact",
-    "network": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-    "asset": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
-    "max_amount_required": "4000",
-    "resource": "POST /v1/poll"
-  }]
-}`}</pre>
+              <div className="feature" style={{ minHeight: 220 }}>
+                <h3 className="feature-title">Search answers and forgets</h3>
+                <p className="feature-desc">
+                  A query returns ranked results and no memory. An agent that polls needs state: what
+                  it already saw, and what is genuinely new.
+                </p>
+                <span className="feature-tag">stateless by design</span>
+              </div>
+              <div className="feature" style={{ minHeight: 220 }}>
+                <h3 className="feature-title">Feeds are built for humans</h3>
+                <p className="feature-desc">
+                  A person reads a feed; an agent needs a bounded answer it can put in a context
+                  window and cite. Those are different products.
+                </p>
+                <span className="feature-tag">wrong shape</span>
               </div>
             </div>
-            <p className="more"><a href="/pricing">See how payment works</a></p>
+          </div>
+        </section>
+
+        {/* WHERE WE ARE */}
+        <section className="scaffold" id="status">
+          <div className="wrap">
+            <div className="sec-head">
+              <span className="sec-eyebrow">Where we are</span>
+              <h2 className="sec-title">Early, and specific about it.</h2>
+              <p className="sec-sub">
+                Enough is built to be used and measured. We would rather you know the line than
+                discover it.
+              </p>
+            </div>
+            <div className="features" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
+              <div className="feature" style={{ minHeight: 200 }}>
+                <span className="feature-tag" style={{ marginTop: 0, paddingTop: 0 }}>Shipped</span>
+                <p className="feature-desc" style={{ marginTop: 14 }}>
+                  The beat catalog, the frozen contract, article clusters per beat, poll and delta
+                  against persisted packs, receipts, and metered billing behind a flag.
+                </p>
+              </div>
+              <div className="feature" style={{ minHeight: 200 }}>
+                <span className="feature-tag" style={{ marginTop: 0, paddingTop: 0 }}>In progress</span>
+                <p className="feature-desc" style={{ marginTop: 14 }}>
+                  Rebuilding the topic queries for a 100-beat catalog, and turning live ingestion
+                  back on. The graph is seeded but not yet moving.
+                </p>
+              </div>
+              <div className="feature" style={{ minHeight: 200 }}>
+                <span className="feature-tag" style={{ marginTop: 0, paddingTop: 0 }}>Next</span>
+                <p className="feature-desc" style={{ marginTop: 14 }}>
+                  Task-to-topic resolution, scheduled watches, briefs, an MCP server, and WebSocket
+                  push so a beat can wake an agent instead of being polled.
+                </p>
+              </div>
+              <div className="feature" style={{ minHeight: 200 }}>
+                <span className="feature-tag" style={{ marginTop: 0, paddingTop: 0 }}>Open</span>
+                <p className="feature-desc" style={{ marginTop: 14 }}>
+                  The contract, the schemas and the documentation are public. The catalog and the
+                  tool definitions need no credential, so you can evaluate before you spend.
+                </p>
+              </div>
+            </div>
+            <p className="more"><a href="/faq">Full status and roadmap</a></p>
           </div>
         </section>
 
@@ -486,15 +527,15 @@ export default function Home() {
           <div className="wrap">
             <h2 className="cta-title">Never miss the signal.</h2>
             <p className="cta-sub">
-              Point your agent at the topics that matter, give it a wallet, and let it tell you when
-              something changes.
+              Point your agent at the topics that matter and let it tell you when something
+              changes. Usage-based, no seat licence, free while we are in early access.
             </p>
             <div className="cta-row">
               <a className="btn-primary" href="/dashboard">Open the live terminal <ArrowRight size={14} /></a>
               <a className="btn-ghost" href="/docs">Read the docs</a>
             </div>
             <p className="cta-tiny">
-              metered per answer · no seat licence · settled in USDC on Solana
+              metered per answer · no seat licence · free while we are in early access
             </p>
           </div>
         </section>

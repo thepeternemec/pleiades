@@ -34,15 +34,15 @@ const FAQ = [
   },
   {
     q: "How do I top up?",
-    a: "POST /v1/deposits returns a Solana Pay link and a reference key. Pay it from any Solana wallet in USDC, USDT or SOL and the credits land once the transfer confirms. The minimum is $1, and credits never expire.",
+    a: "POST /v1/deposits returns a payment instruction for the amount you asked for. Once it is paid the credits land in your balance. The minimum is $1, credits never expire, and card, invoice and stablecoin are all accepted.",
   },
   {
     q: "What happens when my balance runs out?",
-    a: "The next call returns 402 with a quote for that exact call, so an agent with a wallet can buy just that one answer over x402 and keep going. Nothing is queued and nothing is lost — the cursor you hold is still valid.",
+    a: "The next call returns 402 with a quote for that exact call, so the agent can settle that one answer and keep going. Nothing is queued, no work is lost, and the cursor you hold stays valid.",
   },
   {
-    q: "Is per-call payment more expensive than a deposit?",
-    a: "On x402, yes, slightly: one call is one on-chain payment, though the network fee sits with the facilitator rather than you. The prepaid rail only touches the chain when you top up, which is why it is the cheaper path for anything that polls on a schedule.",
+    q: "Is pay-as-you-go more expensive than a prepaid balance?",
+    a: "Slightly. Pay-as-you-go settles each call individually, which carries a small per-call overhead. A prepaid balance is funded once and then drawn down, which is why it is the cheaper path for anything that polls on a schedule.",
   },
   {
     q: "Are there caps?",
@@ -264,18 +264,18 @@ export default function Pricing() {
             </div>
             <div className="features">
               <div className="feature" style={{ minHeight: 250 }}>
-                <h3 className="feature-title">Pay per call</h3>
+                <h3 className="feature-title">Pay as you go</h3>
                 <p className="feature-desc">
-                  The agent calls without a credential, gets a 402 quoting that exact call in USDC,
-                  pays from its own wallet and retries. No account is created at any point.
+                  Each call is billed to the account that made it. No balance to manage, and no
+                  separate funding step before the first request.
                 </p>
-                <span className="feature-tag">best for: occasional or agent-owned wallets</span>
+                <span className="feature-tag">best for: evaluation and occasional calls</span>
               </div>
               <div className="feature" style={{ minHeight: 250 }}>
                 <h3 className="feature-title">Draw from a balance</h3>
                 <p className="feature-desc">
                   Top up once and each call deducts its price in the same transaction that writes
-                  the receipt. No wallet prompt and no network fee on the call itself.
+                  the receipt. No per-call payment step.
                 </p>
                 <span className="feature-tag">best for: anything that polls on a schedule</span>
               </div>
@@ -289,7 +289,7 @@ export default function Pricing() {
                 <span className="feature-tag">no subscription</span>
               </div>
             </div>
-            <p className="more"><a href="/docs/payment">The full payment reference</a></p>
+            <p className="more"><a href="/docs/billing">The full payment reference</a></p>
           </div>
         </section>
 
@@ -307,26 +307,26 @@ export default function Pricing() {
 
             <div className="showcase" style={{ paddingTop: 0 }}>
               <div>
-                <h3>Fund it from any Solana wallet.</h3>
+                <h3>Fund it once, then draw down.</h3>
                 <p>
-                  Ask for a deposit, pay the link it returns, and the credits land when the transfer
-                  confirms. Minimum $1, and whatever you top up stays yours until a call uses it.
+                  Create a top-up, pay the instruction it returns, and the credits land in your
+                  balance. Minimum $1, and whatever you top up stays yours until a call uses it.
                 </p>
                 <ul>
-                  <li>USDC, USDT or native SOL, credited in USD at the quoted rate</li>
-                  <li>A unique reference key per deposit, so nothing is misattributed</li>
-                  <li>Credits never expire and the rate is frozen on the deposit</li>
-                  <li>Deposits over $1 credit exactly what arrives, including overpayment</li>
+                  <li>Card, invoice or stablecoin — all credited in USD</li>
+                  <li>Credits never expire and are held as integer USD micros</li>
+                  <li>Top-ups over $1 credit exactly what arrives, including overpayment</li>
+                  <li>A unique reference per top-up, so nothing is misattributed</li>
                 </ul>
               </div>
               <div className="code">
                 <div className="code-bar">POST /v1/deposits · 201 Created</div>
                 <pre>{`{
   "deposit_id": "dep_01JQ8ZK4M2X",
-  "symbol": "USDC",
-  "amount_ui": "5",
-  "reference": "7Yq3mQbK1sVpNcRfH2xWtZ9dLgUeA4nT6jPkM8vBsXo",
-  "pay_url": "solana:<treasury>?amount=5&spl-token=EPjF…&reference=7Yq3…",
+  "amount_micros": 5000000,
+  "currency": "USD",
+  "symbol": "USD",
+  "pay_url": "<payment instruction>",
   "expires_at": "2026-09-12T12:30:00Z"
 }
 
@@ -348,8 +348,8 @@ GET /v1/balance
               <div className="feature" style={{ minHeight: 190 }}>
                 <h3 className="feature-title">Empty balance</h3>
                 <p className="feature-desc">
-                  Calls return 402 with a quote for that one call. An agent with a wallet can pay
-                  it and continue; nothing is queued and no cursor is lost.
+                  Calls return 402 with a quote for that one call. Settle that single call and
+                  continue; nothing is queued and no cursor is lost.
                 </p>
                 <span className="feature-tag">402, not an outage</span>
               </div>
@@ -435,7 +435,7 @@ GET /v1/balance
               <a className="btn-primary" href="/docs/quickstart">
                 Get started free <ArrowRight size={14} />
               </a>
-              <a className="btn-ghost" href="/docs/payment">Read the payment reference</a>
+              <a className="btn-ghost" href="/docs/billing">Read the payment reference</a>
             </div>
             <p className="cta-tiny">no card · no contract · free while we are in early access</p>
           </div>

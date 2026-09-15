@@ -1,5 +1,9 @@
 # Pleiades API Roadmap Review
 
+> **Historical planning note.** This document records the original plan. For the current
+> product positioning see the [README](../README.md), and for what is actually shipped see the
+> status table in [pleiades.news/docs](https://pleiades.news/docs).
+
 **From the v0.1 "beats" foundation to the Real-Time News Terminal vision**
 
 *Audit date: September 2026 · Evidence: live probes of `https://openbeat.vercel.app` plus the published developer guide at `/docs`. Integration research cited inline and in [Sources](#sources).*
@@ -21,7 +25,7 @@ Pleiades v0.1 is a **remarkably clean agent-facing contract** — catalog → re
 | WebSocket delivery | Push channel over pack advancement | ❌ Pull-only | Phase 2 |
 | Telegram + Discord bots | Outbound delivery services | ❌ None | Phase 3 |
 | Virtuals ACP | On-chain job/memo commerce | ❌ None | Phase 4 |
-| Coinbase x402 | HTTP 402 payment facilitation in USDC | 🟡 `X-PAYMENT` header + `rail` field already anticipate it | Phase 4 |
+| Payment rails | HTTP 402 per-call billing | 🟡 the payment header + `rail` field already anticipate it | Phase 4 |
 | newsapi.ai structured filtering | Concept-URI queries, events, sentiment | 🟡 Catalog's `concept_uris` are already in newsapi.ai's dialect | Phase 1 |
 | Trader / creator / media / agent workflows | Audience-specific products on top of the API | ❌ None | Phase 5 |
 
@@ -153,9 +157,9 @@ Thin clients over the Phase 2 pipeline — no new intelligence, just delivery:
 
 ---
 
-## 7. Phase 4 — Agent-native rails: x402 + Virtuals ACP (+ MCP)
+## 7. Phase 4 — Agent-native rails: per-call billing + Virtuals ACP (+ MCP)
 
-### 7.1 x402 payments (replaces operator-managed funding)
+### 7.1 Per-call payments (replaces operator-managed funding)
 
 The existing ledger is already rail-shaped for this. [x402](https://docs.cdp.coinbase.com/x402/how-it-works) = HTTP 402 Payment Required + signed USDC settlement on Base, with the payment spec passed in response headers (`X-PAYMENT` family) and agentic accounts on Coinbase.
 
