@@ -1,0 +1,48 @@
+name: Bug report
+description: Something behaves differently from how it is documented.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. The most useful bug reports here are about the
+        contract — a response that does not match `docs/` — because those are the
+        ones that break integrations.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you expected, and what you got instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: A curl command or a code snippet is ideal. Redact any API key.
+      render: shell
+    validations:
+      required: true
+  - type: input
+    id: route
+    attributes:
+      label: Endpoint
+      placeholder: POST /v1/poll
+  - type: textarea
+    id: response
+    attributes:
+      label: Response
+      description: The full body, including any `error` and `reason` fields.
+      render: json
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - API response or contract
+        - Ingestion or a pack's contents
+        - Billing, balance or receipts
+        - Docs or the website
+        - Something else
+    validations:
+      required: true

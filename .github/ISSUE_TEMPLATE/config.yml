@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Read the docs first
+    url: https://pleiades.news/docs
+    about: Quickstart, the contract, the billing model and the limits.
+  - name: Ask a question
+    url: https://github.com/thepeternemec/pleiades/discussions
+    about: For "how do I…" rather than a bug or a feature.

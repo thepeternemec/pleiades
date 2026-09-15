@@ -1,0 +1,21 @@
+name: Feature request
+description: Propose a capability, an endpoint or a surface.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to build?
+      description: Describe the agent or product, not the API shape. The shape is easier to agree on once the goal is clear.
+    validations:
+      required: true
+  - type: textarea
+    id: today
+    attributes:
+      label: What do you do today instead?
+      description: The workaround you are replacing tells us how much the feature is worth.
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed shape, if you have one
+      render: json

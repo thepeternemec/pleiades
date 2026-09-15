@@ -283,18 +283,44 @@ Deeper reading: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) ·
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | What the host provides, and what leaving costs |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Phased plan |
 | [AGENTS.md](AGENTS.md) | Integration guide written for coding agents |
+| [CONTRIBUTING-FIRST-PR.md](CONTRIBUTING-FIRST-PR.md) | Fresh clone to merged change |
+| [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Ground rules for project spaces |
 
 ---
 
-## 🤝 Contributing
+## 🤝 Open source
 
-Bug reports, new topics, documentation fixes and billing work are all welcome. See
-[CONTRIBUTING.md](CONTRIBUTING.md) for the workflow and the rules that keep this repo honest.
+MIT licensed, and built to be extended rather than only used. Three things make it a good place
+to spend an afternoon:
 
-- **Propose a topic:** open an issue with the subject, the concept URIs and why an agent would poll it.
-- **Fix the docs:** every page under `apps/web/app/(site)/docs/` is plain JSX — no build step.
-- **Never let the site claim more than the code does.** If you ship a capability, update the
-  status tables in the README and on the site in the same PR.
+- **It runs without infrastructure.** `npm install && npm test` needs no database, no API key and
+  no news provider — 50 tests, all pure. The interesting logic lives in `packages/contracts` and
+  `packages/db`, where it can be tested directly.
+- **It is small enough to read.** Five packages, a Hono API and a worker. `docs/ARCHITECTURE.md`
+  is one page and covers the whole thing.
+- **The catalog is open.** It is being rebuilt from 20 beats to 100 and the list is not settled —
+  proposing a topic is a real contribution that needs no code.
+
+### The most useful things you can do
+
+| Contribution | Where to start |
+| --- | --- |
+| **Propose a topic** for the 100-beat catalog | [Open a topic request](https://github.com/thepeternemec/pleiades/issues/new?template=topic_request.yml) — no code needed |
+| **Fix the docs** | Every page under `apps/web/app/(site)/docs/` is plain JSX, no build step |
+| **Write an SDK or integration** | `packages/sdk` is thin; a Python or Go client would be genuinely useful |
+| **Pick up a `good first issue`** | [Filter the issue list](https://github.com/thepeternemec/pleiades/labels/good%20first%20issue) |
+
+**Start here: [CONTRIBUTING-FIRST-PR.md](CONTRIBUTING-FIRST-PR.md)** — the fastest path from a
+fresh clone to a merged change. [CONTRIBUTING.md](CONTRIBUTING.md) has the full workflow and
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) the ground rules.
+
+### The one rule that matters most
+
+**Never let the site or the docs claim more than the code does.** Every capability in this repo
+carries a status — *live*, *built but off by default*, *interface published*, *not built* — in the
+README, in `docs/`, and on the site. If you ship something, update those tables in the same PR.
+There are deliberate tests for this mindset: `packages/contracts` refuses to describe a field
+that the API cannot actually return.
 
 ---
 

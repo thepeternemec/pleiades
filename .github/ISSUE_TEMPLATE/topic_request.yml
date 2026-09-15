@@ -1,0 +1,34 @@
+name: Topic request
+description: Propose a beat for the catalog. This is the most useful thing you can contribute.
+labels: ["topic", "good first issue"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The catalog is being rebuilt from 20 beats to 100, and the list is open.
+        A good beat is something a machine would poll on a schedule and act on —
+        not a topic a human would browse. See `docs/` for how beats are shaped.
+  - type: input
+    id: label
+    attributes:
+      label: Topic name
+      placeholder: HBM supply
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why would an agent poll this?
+      description: What decision does it feed, and how often would it change?
+    validations:
+      required: true
+  - type: input
+    id: concepts
+    attributes:
+      label: Concept URIs, if you have them
+      placeholder: http://en.wikipedia.org/wiki/High_Bandwidth_Memory
+  - type: input
+    id: sources
+    attributes:
+      label: Sources you would trust for it
+      placeholder: Reuters, Bloomberg, TrendForce
