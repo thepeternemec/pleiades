@@ -497,7 +497,8 @@
   height: 14px;
   border: 0;
   border-radius: 50%;
-  background: #9945ff;
+  /* Firefox cannot use a gradient on a range thumb, so use the ramp's midpoint. */
+  background: #d4d4d4;
   cursor: pointer;
 }
 .calc-out {
