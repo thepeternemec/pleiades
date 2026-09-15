@@ -91,10 +91,11 @@ GET /v1/balance
         <li>Stablecoin top-ups are accepted alongside card and invoice</li>
       </ul>
       <p>
-        Top-ups are not self-serve yet. The endpoint is built and verified, but it returns{" "}
-        <code>unsupported_rail</code> until an operator has configured a receiving account. While
-        metering is switched off entirely, calls are free and no receipt is written, so you can
-        integrate before billing exists.
+        Top-ups are not self-serve yet. The endpoint, the ledger and the watcher that credits a
+        payment are all built and tested, but they stay inactive until an operator has configured a
+        receiving account — so it returns <code>unsupported_rail</code> rather than handing you a
+        payment instruction nobody is watching. While metering is switched off entirely, calls are
+        free and no receipt is written, so you can integrate before billing exists.
       </p>
 
       <h2>Balance and receipts</h2>

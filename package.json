@@ -22,7 +22,8 @@
     "sync:supabase": "node scripts/sync-supabase.mjs",
     "check:supabase": "node scripts/sync-supabase.mjs --check",
     "verify:integrations": "node examples/verify-integrations.mjs",
-    "verify:local": "node examples/verify-local.mjs"
+    "verify:local": "node examples/verify-local.mjs",
+    "agent:create": "node scripts/create-agent.mjs"
   },
   "allowScripts": {
     "esbuild@0.28.2": true

@@ -141,6 +141,34 @@ export async function listDepositIntents(db: SupabaseClient, agentId: string, li
  * Resolve a reference key back to its intent. This is the watcher's entry
  * point: `reference` is the only identifier a transfer carries.
  */
+/**
+ * Every unresolved intent, oldest first. The deposit watcher walks this list
+ * rather than a per-agent one, because a watcher does not know which agent is
+ * about to pay — it only knows which references are still waiting.
+ */
+export async function listOpenIntents(db: SupabaseClient, limit = 250) {
+  const { data, error } = await db
+    .from("deposit_intents")
+    .select("*")
+    .eq("state", "open")
+    .order("created_at", { ascending: true })
+    .limit(limit);
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
+/** Intents that are funded but not yet credited, for the reconciliation pass. */
+export async function listPaidIntents(db: SupabaseClient, limit = 250) {
+  const { data, error } = await db
+    .from("deposit_intents")
+    .select("*")
+    .eq("state", "paid")
+    .order("created_at", { ascending: true })
+    .limit(limit);
+  if (error) throw new Error(error.message);
+  return data ?? [];
+}
+
 export async function findIntentByReference(db: SupabaseClient, reference: string) {
   const { data, error } = await db
     .from("deposit_intents")

@@ -155,6 +155,7 @@ Base: `https://dnnoypytdfvsdenykooq.supabase.co/functions/v1/api`
 | Balance | `GET /v1/balance` | Built; needs a credential |
 | Receipts | `GET /v1/receipts?since=` | Built; needs a credential |
 | Top-ups | `POST`, `GET /v1/deposits` | Built; needs a receiving account |
+| Deposit watcher | `npm run watch:deposits` | Built; verifies and credits on a schedule |
 | Resolve | `POST /v1/resolve` | Not built |
 | Brief | `POST /v1/brief` | Not built |
 | Watch | `POST /v1/watch` | Not built |

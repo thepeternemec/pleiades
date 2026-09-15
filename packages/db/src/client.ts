@@ -1,5 +1,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
+export type { SupabaseClient };
+
 /**
  * Environment access that works on both Node (process.env) and Deno
  * (Deno.env). Supabase Edge Functions auto-inject SUPABASE_URL and

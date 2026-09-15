@@ -21,16 +21,42 @@ a customer funds their balance is an implementation detail of the metered ledger
 | `GET /v1/tokens` — accepted mints, decimals, settlement state | **built** |
 | `POST/GET /v1/deposits` — intent, Solana Pay URL, reference key | **built**; returns `unsupported_rail` until a treasury is set |
 | x402 challenge on an uncredentialed call | **built** (`402` with the quote for that resource) |
-| Deposit watcher (Helius webhook + polling sweep) | **not yet** — needs RPC + treasury |
-| x402 settlement (facilitator verify + settle) | **not yet** |
+| **Deposit watcher** — reads the chain, verifies, credits | **built** (`apps/worker/src/solana/watch.ts`) |
+| **Polling sweep** — every open intent, oldest first | **built** (`npm run watch:deposits`) |
+| **Key issuance CLI** | **built** (`npm run agent:create -- "label"`) |
+| Push notification of deposits (webhook) | **not yet** — the sweep covers it at 30s |
+| x402 settlement (facilitator verify + settle) | **not yet** — the challenge is issued, nothing settles it |
 | `resolve`, `brief`, `watch` verbs | **not yet** |
 
 ### Turning the meter on
 
 ```
-PLEIADES_METERING=on        # default "off"
-PLEIADES_TREASURY=<base58>  # a native SOL account, never an ATA
+PLEIADES_METERING=on              # default "off"
+PLEIADES_TREASURY=<base58>        # a native SOL account, never an ATA
+SOLANA_RPC_URL=<provider>         # the public endpoint will rate-limit a poll loop
+PLEIADES_SOL_RATE_MICROS=150000000  # optional; only needed to credit SOL
 ```
+
+Then run the watcher on a schedule — `npm run watch:deposits` once per pass, or
+`--loop` to keep it resident. It is idempotent: `record_deposit` is keyed on the
+transaction signature, so running it twice credits once.
+
+### How the watcher decides
+
+It never trusts the transfer's own claims. Every candidate goes through
+`verifyDepositTransfer`, which re-checks recipient, mint, reference, amount and
+confirmation, and anything that fails is left alone rather than credited.
+
+Two decisions worth knowing about:
+
+- **Native `lamports` arrives as a JSON number, SPL amounts as strings.** Coercing only
+  strings read a SOL transfer as zero, which then failed as `underpaid`. Both are handled.
+- **Stablecoins are pinned at par; SOL needs a configured rate.** Without
+  `PLEIADES_SOL_RATE_MICROS` a SOL intent is skipped rather than credited at a guessed
+  price — the credited amount would otherwise depend on an invented number.
+
+An expired intent is marked `expired`, never deleted, because a late payment can still be
+reconciled by hand.
 
 Metering is off by default on purpose. Switching it on makes every anonymous call a
 `402` and every caller without a key unable to read a pack, so it should be a
