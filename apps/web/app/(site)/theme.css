@@ -270,11 +270,20 @@
 @media (max-width: 900px) {
   .docs {
     grid-template-columns: 1fr;
-    gap: 28px;
-    padding-top: 120px;
+    gap: 36px;
+    padding-top: 152px;
+  }
+  /* The contents list is 365px tall on a phone — a full screen of links
+     before a single line of documentation. Lead with the article and put
+     the nav after it, where it reads as "related pages" instead. */
+  .docs-body {
+    order: 1;
   }
   .docs-side {
+    order: 2;
     position: static;
+    padding-top: 28px;
+    border-top: 1px solid var(--border-default);
   }
 }
 
@@ -613,4 +622,79 @@
    scroll frame. They resume 170ms after the page settles. */
 .is-scrolling .noise-overlay {
   animation-play-state: paused;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Mobile.
+   The nav links used to be hidden below 700px with nothing in their
+   place, which left Docs, FAQ and Pricing unreachable on a phone — the
+   worst possible omission for a developer product. The pill now wraps to
+   two rows instead: identity and the CTA, then the links.
+   ══════════════════════════════════════════════════════════════════ */
+@media (max-width: 700px) {
+  .nav-pill {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 26px;
+    /* Bounded, or the two-row pill runs past the viewport edge. */
+    width: min(420px, calc(100vw - 24px));
+  }
+  .nav-logo {
+    padding-right: 0;
+  }
+  .nav-logo i,
+  .nav-logo small {
+    display: none;
+  }
+  .nav-cta {
+    margin-left: auto;
+  }
+  /* The links take a full second row rather than disappearing.
+     `flex: 1 0 100%` rather than `width: 100%`: the pill is inline-flex and
+     content-sized, so a percentage width is circular and overflowed the
+     viewport. A 100% flex-basis forces the wrap without needing the parent
+     to know its own width. */
+  .nav-links {
+    order: 3;
+    flex: 1 0 100%;
+    justify-content: center;
+    gap: 2px;
+    margin-top: 2px;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-default);
+  }
+  .nav-link {
+    padding: 7px 14px;
+  }
+
+  /* The hero eyebrow fits on one line once the least load-bearing stat
+     drops. It is repeated verbatim in the line under the buttons. */
+  .eyebrow-stat-optional {
+    display: none;
+  }
+  .eyebrow {
+    font-size: 11.5px;
+    gap: 6px;
+  }
+}
+
+/* The two-row mobile nav is ~104px tall, so the page headers need more
+   clearance than the single-row one did. */
+@media (max-width: 700px) {
+  .hero {
+    padding-top: 178px;
+  }
+  .page-head {
+    padding-top: 172px;
+  }
+  /* Only .docs: .docs-head is rendered *inside* it, so padding both pushed
+     the first heading 152px down for nothing. 178px matches .hero, which is
+     what the two-row pill actually needs. */
+  .docs {
+    /* 178px matches .hero, but this page opens with an h1 rather than a small
+       pill, so it needs a little more air under the fixed nav. */
+    padding-top: 196px;
+  }
 }

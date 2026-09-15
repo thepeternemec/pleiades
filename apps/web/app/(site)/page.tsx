@@ -158,11 +158,13 @@ export default function Home() {
           <div className="wrap">
             <span className="eyebrow">
               <span className="eyebrow-tag">Early access</span>
-              {stats?.beats ?? 20} topics live
-              <span style={{ color: "var(--border-strong)" }}>·</span>
-              150,000 publishers
-              <span style={{ color: "var(--border-strong)" }}>·</span>
-              usage-based
+              <span className="eyebrow-stat">{stats?.beats ?? 20} topics live</span>
+              <span className="eyebrow-stat">
+                <span className="eyebrow-sep">·</span> 150,000 publishers
+              </span>
+              <span className="eyebrow-stat eyebrow-stat-optional">
+                <span className="eyebrow-sep">·</span> usage-based
+              </span>
             </span>
 
             <h1>The news layer for AI agents.</h1>

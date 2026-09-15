@@ -1128,7 +1128,6 @@ footer.site { border-top: 1px solid var(--border-default); padding: 20px 0 26px;
 }
 @media (max-width: 700px) {
   .wrap, .wrap-tight { padding: 0 20px; }
-  .nav-links { display: none; }
   .hero { padding-top: 120px; }
   .pillars-grid, .features { grid-template-columns: 1fr; }
   .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
