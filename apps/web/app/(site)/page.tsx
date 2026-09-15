@@ -524,6 +524,59 @@ export default function Home() {
           </div>
         </section>
 
+        {/* OPEN SOURCE */}
+        <section className="scaffold" id="open-source">
+          <div className="wrap">
+            <div className="sec-head">
+              <span className="sec-eyebrow">Open source</span>
+              <h2 className="sec-title">MIT licensed. Built to be extended.</h2>
+              <p className="sec-sub">
+                All of it is public — the contract, the ingestion worker, the ledger and this site.
+                Three things make it worth an afternoon.
+              </p>
+            </div>
+            <div className="features">
+              <div className="feature" style={{ minHeight: 210 }}>
+                <h3 className="feature-title">Runs without infrastructure</h3>
+                <p className="feature-desc">
+                  Clone it and run the tests with no database, no API key and no news provider. The
+                  interesting logic is pure by design, so it can be exercised on its own.
+                </p>
+                <span className="feature-tag">npm install &amp;&amp; npm test</span>
+              </div>
+              <div className="feature" style={{ minHeight: 210 }}>
+                <h3 className="feature-title">Small enough to read</h3>
+                <p className="feature-desc">
+                  Five packages, one API and one worker. The architecture doc is a single page and
+                  covers all of it, including why the billing rules live in SQL rather than in the
+                  service.
+                </p>
+                <span className="feature-tag">one page of architecture</span>
+              </div>
+              <div className="feature" style={{ minHeight: 210 }}>
+                <h3 className="feature-title">The catalog is open</h3>
+                <p className="feature-desc">
+                  It is being rebuilt from 20 topics to 100 and the list is not settled. Proposing
+                  one takes an issue and no code at all — it is the cheapest real contribution here.
+                </p>
+                <span className="feature-tag">propose a topic</span>
+              </div>
+            </div>
+            <div className="oss-row">
+              <a className="btn-primary" href="https://github.com/thepeternemec/pleiades">
+                Star it on GitHub <ArrowRight size={14} />
+              </a>
+              <a className="btn-ghost" href="https://github.com/thepeternemec/pleiades/blob/main/CONTRIBUTING-FIRST-PR.md">
+                Your first pull request
+              </a>
+            </div>
+            <p className="hero-tiny" style={{ textAlign: "left" }}>
+              Python or Go SDKs, extra topics, documentation fixes and integration examples are all
+              genuinely useful. There is no CLA.
+            </p>
+          </div>
+        </section>
+
         {/* CTA */}
         <section className="cta-section">
           <div className="wrap">

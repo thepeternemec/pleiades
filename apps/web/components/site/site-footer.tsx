@@ -14,6 +14,9 @@ export default function SiteFooter() {
             <a href="/docs">Docs</a>
             <a href="/faq">FAQ</a>
             <a href="https://github.com/thepeternemec/pleiades">GitHub</a>
+            <a href="https://github.com/thepeternemec/pleiades/blob/main/CONTRIBUTING-FIRST-PR.md">
+              Contribute
+            </a>
           </div>
         </div>
         <div className="footer-row" style={{ marginTop: 10 }}>

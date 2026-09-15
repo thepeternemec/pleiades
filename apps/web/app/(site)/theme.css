@@ -698,3 +698,27 @@
     padding-top: 196px;
   }
 }
+
+/* ── Open-source row: the two links under the licence section ──────── */
+.oss-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 36px;
+}
+/* The GitHub mark sits with the nav links, not the CTA. */
+.nav-gh {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-left: 4px;
+  border-radius: 999px;
+  color: var(--text-tertiary);
+  transition: color 0.15s, background 0.15s;
+}
+.nav-gh:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+}
